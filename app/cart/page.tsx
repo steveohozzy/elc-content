@@ -1,0 +1,169 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+
+import { getStoredCartId } from "@/lib/cart";
+import { getCartAction } from "@/app/actions/cart";
+
+type Cart = {
+  checkoutUrl: string;
+  totalQuantity: number;
+  lines: {
+    edges: {
+      node: {
+        id: string;
+        quantity: number;
+        merchandise: {
+          product: {
+            title: string;
+          };
+          image: {
+            url: string;
+          };
+          price: {
+            amount: string;
+            currencyCode: string;
+          };
+        };
+      };
+    }[];
+  };
+  cost: {
+    subtotalAmount: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
+};
+
+export default function CartPage() {
+  const [cart, setCart] = useState<Cart | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadCart() {
+      const cartId = getStoredCartId();
+
+      if (!cartId) {
+        setLoading(false);
+        return;
+      }
+
+      const cartData = await getCartAction(cartId);
+
+      setCart(cartData);
+      setLoading(false);
+    }
+
+    loadCart();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-20">
+        <p className="text-gray-600">Loading cart...</p>
+      </div>
+    );
+  }
+
+  if (!cart || cart.totalQuantity === 0) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-20 text-center">
+        <h1 className="text-3xl font-bold">
+          Your cart is empty
+        </h1>
+
+        <p className="mt-2 text-gray-600">
+          Add some products to get started.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-10">
+      {/* TITLE */}
+      <h1 className="mb-8 text-4xl font-bold">
+        Your Cart
+      </h1>
+
+      <div className="grid gap-6">
+        {/* ITEMS */}
+        {cart.lines.edges.map(({ node }) => (
+          <div
+            key={node.id}
+            className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+          >
+            {/* IMAGE */}
+            <div className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
+              <Image
+                src={
+                  node.merchandise.image?.url
+                }
+                width={150}
+                height={150}
+                alt={
+                  node.merchandise.product.title
+                }
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            {/* DETAILS */}
+            <div className="flex flex-1 flex-col justify-between">
+              <div>
+                <h2 className="text-lg font-semibold">
+                  {
+                    node.merchandise.product
+                      .title
+                  }
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-600">
+                  Quantity: {node.quantity}
+                </p>
+              </div>
+
+              <p className="text-base font-bold">
+                {
+                  node.merchandise.price
+                    .currencyCode
+                }{" "}
+                {
+                  node.merchandise.price.amount
+                }
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* SUMMARY */}
+      <div className="mt-10 rounded-xl border border-gray-200 bg-gray-50 p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold">
+            Subtotal
+          </h2>
+
+          <p className="text-xl font-bold">
+            {
+              cart.cost.subtotalAmount
+                .currencyCode
+            }{" "}
+            {
+              cart.cost.subtotalAmount.amount
+            }
+          </p>
+        </div>
+
+        <a
+          href={cart.checkoutUrl}
+          className="mt-6 block w-full rounded-lg bg-black py-3 text-center text-white transition hover:bg-gray-800"
+        >
+          Checkout
+        </a>
+      </div>
+    </div>
+  );
+}
