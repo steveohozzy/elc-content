@@ -94,7 +94,7 @@ export default function SearchClient({
           <input
             type="range"
             min="0"
-            max="500"
+            max={maxProductPrice}
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
           />
@@ -102,29 +102,29 @@ export default function SearchClient({
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 pb-14 md:grid-cols-4 md:gap-6">
         {filtered.map((node) => (
           <Link
             key={node.id}
             href={`/products/${node.handle}`}
-            className="group overflow-hidden rounded-2xl border bg-white transition hover:-translate-y-1 hover:shadow-xl"
+            className="group overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:shadow-lg"
           >
-            <div className="aspect-square overflow-hidden">
+            <div className="aspect-square overflow-hidden bg-gray-100">
               <Image
                 src={node.images.edges[0]?.node.url}
                 width={600}
                 height={600}
                 alt={node.title}
-                className="h-full w-full object-cover transition group-hover:scale-105"
+                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
               />
             </div>
 
             <div className="p-4">
-              <h3 className="text-sm font-medium">
+              <h3 className="line-clamp-2 text-sm font-medium md:text-base">
                 {node.title}
               </h3>
 
-              <p className="mt-2 font-semibold">
+              <p className="mt-2 text-lg font-bold">
                 {node.priceRange.minVariantPrice.currencyCode}{" "}
                 {node.priceRange.minVariantPrice.amount}
               </p>
