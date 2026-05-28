@@ -168,13 +168,7 @@ export default function Header() {
               Automated
             </Link>
 
-            <Link
-              href="/cart"
-              className="text-lg font-medium text-gray-800 transition hover:translate-x-1 hover:text-black"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Cart
-            </Link>
+            <CartIcon onClick={() => setMobileMenuOpen(false)} />
           </nav>
         </div>
       </div>
