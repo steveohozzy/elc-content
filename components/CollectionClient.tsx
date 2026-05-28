@@ -109,14 +109,39 @@ export default function SearchClient({
             href={`/products/${node.handle}`}
             className="group overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:shadow-lg"
           >
-            <div className="aspect-square overflow-hidden bg-gray-100">
+            <div className="relative aspect-square overflow-hidden bg-gray-100">
+              {/* First Image */}
               <Image
                 src={node.images.edges[0]?.node.url}
                 width={600}
                 height={600}
                 alt={node.title}
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                className="
+                  absolute inset-0
+                  h-full w-full object-cover
+                  transition duration-500
+                  group-hover:scale-110
+                  group-hover:opacity-0
+                "
               />
+            
+              {/* Second Image */}
+              {node.images.edges[1]?.node.url && (
+                <Image
+                  src={node.images.edges[1]?.node.url}
+                  width={600}
+                  height={600}
+                  alt={node.title}
+                  className="
+                    absolute inset-0
+                    h-full w-full object-cover
+                    opacity-0
+                    transition duration-500
+                    group-hover:scale-110
+                    group-hover:opacity-100
+                  "
+                />
+              )}
             </div>
 
             <div className="p-4">

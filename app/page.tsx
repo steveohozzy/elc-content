@@ -54,15 +54,41 @@ export default async function Home() {
           >
             {/* IMAGE */}
             <div className="aspect-square overflow-hidden bg-gray-100">
-              <Image
-                src={
-                  node.images.edges[0]?.node.url
-                }
-                width={600}
-                height={600}
-                alt={node.title}
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-              />
+              {/* IMAGE */}
+              <div className="relative aspect-square overflow-hidden bg-gray-100">
+                {/* First Image */}
+                <Image
+                  src={node.images.edges[0]?.node.url}
+                  width={600}
+                  height={600}
+                  alt={node.title}
+                  className="
+                    absolute inset-0
+                    h-full w-full object-cover
+                    transition duration-500
+                    group-hover:scale-110
+                    group-hover:opacity-0
+                  "
+                />
+
+                {/* Second Image */}
+                {node.images.edges[1]?.node.url && (
+                  <Image
+                    src={node.images.edges[1]?.node.url}
+                    width={600}
+                    height={600}
+                    alt={node.title}
+                    className="
+                      absolute inset-0
+                      h-full w-full object-cover
+                      opacity-0
+                      transition duration-500
+                      group-hover:scale-110
+                      group-hover:opacity-100
+                    "
+                  />
+                )}
+              </div>
             </div>
 
             {/* CONTENT */}
