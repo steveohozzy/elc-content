@@ -1,45 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
-
-
 
 type MediaNode =
   | {
       __typename: "MediaImage";
-      image?: {
-        url: string;
-        altText?: string;
-      };
+      image?: { url: string; altText?: string };
     }
   | {
       __typename: "Video";
-      sources?: {
-        url: string;
-        mimeType: string;
-      }[];
+      sources?: { url: string; mimeType: string }[];
     }
   | {
       __typename: "ExternalVideo";
       embeddedUrl: string;
     };
 
-type MediaEdge = {
-  node: MediaNode;
-};
+type MediaEdge = { node: MediaNode };
+
 const cleanYoutubeUrl = (url?: string) => {
   if (!url) return "";
 
   try {
     const u = new URL(url);
 
-    // watch?v=
     if (u.hostname.includes("youtube.com") && u.searchParams.get("v")) {
       return `https://www.youtube.com/embed/${u.searchParams.get("v")}`;
     }
 
-    // youtu.be short links
     if (u.hostname === "youtu.be") {
       return `https://www.youtube.com/embed${u.pathname}`;
     }
@@ -49,50 +38,99 @@ const cleanYoutubeUrl = (url?: string) => {
     return url;
   }
 };
+
 export default function ProductMediaGallery({
   media,
 }: {
-  media?: {
-    edges?: MediaEdge[];
-  };
+  media?: { edges?: MediaEdge[] };
 }) {
   const items = media?.edges ?? [];
+
   const [active, setActive] = useState(0);
 
-  const activeItem = items[active]?.node;
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
-  const renderMedia = (item?: MediaNode) => {
-    if (!item) return null;
+  const startX = useRef(0);
+  const currentX = useRef(0);
+  const isDragging = useRef(false);
 
+  const goTo = (i: number) => {
+    if (i < 0) return setActive(items.length - 1);
+    if (i >= items.length) return setActive(0);
+    setActive(i);
+  };
+
+  const changeSlide = (i: number) => {
+    setActive(i);
+  };
+
+  // ================= DRAG =================
+  const onPointerDown = (e: React.PointerEvent) => {
+    isDragging.current = true;
+
+    startX.current = e.clientX;
+    currentX.current = e.clientX;
+
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+
+    currentX.current = e.clientX;
+
+    const diff = currentX.current - startX.current;
+
+    if (trackRef.current) {
+      trackRef.current.style.transition = "none";
+      trackRef.current.style.transform =
+        `translateX(calc(${-active * 100}% + ${diff}px))`;
+    }
+  };
+
+  const onPointerUp = () => {
+    if (!isDragging.current) return;
+
+    const diff = currentX.current - startX.current;
+    isDragging.current = false;
+
+    if (trackRef.current) {
+      trackRef.current.style.transition = "transform 300ms ease";
+    }
+
+    if (diff < -60) goTo(active + 1);
+    else if (diff > 60) goTo(active - 1);
+    else goTo(active);
+  };
+
+  const renderMedia = (item: MediaNode) => {
     switch (item.__typename) {
       case "MediaImage":
-        return item.image?.url ? (
+        return (
           <Image
-            src={item.image.url}
-            alt={item.image.altText || "Product image"}
+            src={item.image?.url || ""}
+            alt={item.image?.altText || ""}
             width={900}
             height={900}
+            draggable={false}
             className="h-full w-full object-cover"
-            priority
           />
-        ) : null;
+        );
 
       case "Video":
-        return item.sources?.[0]?.url ? (
+        return (
           <video controls className="h-full w-full object-cover">
             <source
-              src={item.sources[0].url}
-              type={item.sources[0].mimeType}
+              src={item.sources?.[0]?.url}
+              type={item.sources?.[0]?.mimeType}
             />
           </video>
-        ) : null;
+        );
 
       case "ExternalVideo":
-        const embedUrl = cleanYoutubeUrl(item.embeddedUrl);
-
         return (
           <iframe
-            src={embedUrl}
+            src={cleanYoutubeUrl(item.embeddedUrl)}
             className="h-full w-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -104,43 +142,88 @@ export default function ProductMediaGallery({
     }
   };
 
+  const isVideoSlide = (index: number) =>
+    items[index]?.node.__typename !== "MediaImage";
+
   if (!items.length) {
     return (
-      <div className="aspect-square rounded-2xl border bg-gray-100 flex items-center justify-center text-gray-400">
-        No media found
+      <div className="aspect-square flex items-center justify-center border bg-gray-100">
+        No media
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      {/* MAIN MEDIA */}
-      <div className="overflow-hidden rounded-2xl border bg-white shadow-sm aspect-square">
-        {renderMedia(activeItem)}
+
+      {/* ================= MAIN ================= */}
+      <div
+        className="relative aspect-square overflow-hidden rounded-2xl border bg-white select-none"
+        style={{ touchAction: "pan-y" }}
+      >
+        {/* TRACK */}
+        <div
+          ref={trackRef}
+          className="flex h-full w-full transition-transform duration-300"
+          style={{
+            transform: `translateX(-${active * 100}%)`,
+          }}
+        >
+          {items.map((item, i) => (
+            <div key={i} className="min-w-full h-full flex-shrink-0">
+              {renderMedia(item.node)}
+            </div>
+          ))}
+        </div>
+
+        {/* DRAG LAYER (ONLY FOR IMAGES) */}
+        {!isVideoSlide(active) && (
+          <div
+            className="absolute inset-0 z-10"
+            style={{ touchAction: "none" }}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+          />
+        )}
+
+        {/* NAV ARROWS */}
+        <button
+          onClick={() => goTo(active - 1)}
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 text-white w-10 h-10 rounded-full"
+        >
+          ‹
+        </button>
+
+        <button
+          onClick={() => goTo(active + 1)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 text-white w-10 h-10 rounded-full"
+        >
+          ›
+        </button>
       </div>
 
-      {/* THUMBNAILS */}
+      {/* ================= THUMBNAILS ================= */}
       <div className="flex gap-2 overflow-x-auto pb-2">
         {items.map((item, i) => (
           <button
             key={i}
-            onClick={() => setActive(i)}
-            className={`cursor-pointer h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border transition ${
+            onClick={() => changeSlide(i)}
+            className={`h-20 w-20 flex-shrink-0 rounded-lg border overflow-hidden ${
               i === active ? "border-black" : "border-gray-200"
             }`}
           >
             {item.node.__typename === "MediaImage" ? (
-              item.node.image?.url ? (
-                <Image
-                  src={item.node.image.url}
-                  alt=""
-                  width={100}
-                  height={100}
-                  className="h-full w-full object-cover"
-                />
-              ) : null
+              <Image
+                src={item.node.image?.url || ""}
+                alt=""
+                width={100}
+                height={100}
+                className="h-full w-full object-cover"
+              />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-black text-white text-xs">
+              <div className="flex h-full w-full items-center justify-center bg-black text-white">
                 ▶
               </div>
             )}
