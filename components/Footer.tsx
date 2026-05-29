@@ -1,12 +1,13 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="mt-20 border-t border-black/10 bg-white">
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-14 md:grid-cols-4">
-
-        {/* BRAND (matches your header) */}
         <div>
-          <div className="flex items-center gap-3">
+          
+          <Link href="/" className="flex items-center gap-3">
 
             {/* SMALL LOGO MARK */}
             <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 bg-black/5 text-sm font-black uppercase tracking-widest text-black">
@@ -22,7 +23,7 @@ export default function Footer() {
                 Snow Supply
               </span>
             </div>
-          </div>
+          </Link>
 
           <p className="mt-4 text-sm leading-relaxed text-gray-600">
             Premium snowboarding gear built for performance, style, and the mountain.
