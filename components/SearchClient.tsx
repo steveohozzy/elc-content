@@ -67,7 +67,7 @@ export default function SearchClient({
     <div className="space-y-6">
 
       {/* ================= FILTER BAR ================= */}
-      <div className="sticky top-20 z-40 rounded-2xl border border-white/10 bg-black/70 backdrop-blur-2xl">
+      <div className="sticky top-20 z-40 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-2xl">
 
         {/* MOBILE BAR */}
         <div className="flex items-center justify-between p-3 md:hidden">
@@ -98,7 +98,7 @@ export default function SearchClient({
                 bg-black/40
                 px-5 py-3 pl-10
                 text-sm text-white
-                placeholder:text-gray-400
+                placeholder:text-gray-300
                 outline-none
                 transition
                 focus:border-white/40
@@ -143,7 +143,7 @@ export default function SearchClient({
           {/* PRICE */}
           <div className="flex w-full flex-col gap-2 md:w-72">
 
-            <div className="flex items-center justify-between text-xs text-gray-300">
+            <div className="flex items-center justify-between text-xs text-gray-200">
               <span>Max Price</span>
               <span className="font-semibold text-white">
                 £{maxPrice}
