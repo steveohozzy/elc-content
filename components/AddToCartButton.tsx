@@ -18,6 +18,7 @@ export default function AddToCartButton({
   variantId: string;
 }) {
   const [loading, setLoading] = useState(false);
+  const [added, setAdded] = useState(false);
 
   const handleClick = async () => {
     try {
@@ -28,26 +29,26 @@ export default function AddToCartButton({
       if (!cartId) {
         const cart = await createCartAction();
 
-        const newCartId: string = cart.id;
-
+        const newCartId = cart.id; // 👈 explicitly typed string
         storeCartId(newCartId);
 
         cartId = newCartId;
       }
 
-      if (!cartId) {
-        throw new Error("Cart ID missing");
-      }
+      if (!cartId) throw new Error("Cart ID missing");
 
-      const updatedCart = await addToCartAction(
-        cartId,
-        variantId
-      );
+      await addToCartAction(cartId, variantId);
 
-      window.location.href = updatedCart.checkoutUrl;
+      // ✅ just UI feedback now
+      setAdded(true);
+
+      setTimeout(() => setAdded(false), 1200);
+
+      // OPTIONAL: trigger global cart update event
+      window.dispatchEvent(new Event("cart:updated"));
+
     } catch (error) {
       console.error(error);
-
       alert("Failed to add item to cart");
     } finally {
       setLoading(false);
@@ -55,7 +56,6 @@ export default function AddToCartButton({
   };
 
   return (
-  <div className="space-y-2">
     <button
       onClick={handleClick}
       disabled={loading}
@@ -66,10 +66,8 @@ export default function AddToCartButton({
         hover:shadow-lg hover:scale-[1.02]
         active:scale-[0.98]
         disabled:opacity-50 disabled:cursor-not-allowed
-        cursor-pointer
       "
     >
-      {/* subtle hover sheen (safe, non-breaking) */}
       <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-gradient-to-r from-white/10 via-white/5 to-white/10" />
 
       <span className="relative flex items-center justify-center gap-2">
@@ -78,6 +76,8 @@ export default function AddToCartButton({
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
             Adding...
           </>
+        ) : added ? (
+          "Added ✓"
         ) : (
           <>
             Add to cart
@@ -88,6 +88,5 @@ export default function AddToCartButton({
         )}
       </span>
     </button>
-  </div>
-);
+  );
 }

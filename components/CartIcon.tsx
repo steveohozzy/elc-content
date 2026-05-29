@@ -12,17 +12,38 @@ export default function CartIcon({
 }) {
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    async function loadCart() {
-      const cartId = getStoredCartId();
-      if (!cartId) return;
-
-      const cart = await getCartAction(cartId);
-      setCount(cart?.totalQuantity ?? 0);
+  const loadCart = async () => {
+    const cartId = getStoredCartId();
+    if (!cartId) {
+      setCount(0);
+      return;
     }
 
+    const cart = await getCartAction(cartId);
+    setCount(cart?.totalQuantity ?? 0);
+  };
+
+  useEffect(() => {
+  async function loadCart() {
+    const cartId = getStoredCartId();
+    if (!cartId) return;
+
+    const cart = await getCartAction(cartId);
+    setCount(cart?.totalQuantity ?? 0);
+  }
+
+  loadCart();
+
+  const handleUpdate = () => {
     loadCart();
-  }, []);
+  };
+
+  window.addEventListener("cart:updated", handleUpdate);
+
+  return () => {
+    window.removeEventListener("cart:updated", handleUpdate);
+  };
+}, []);
 
   return (
     <Link

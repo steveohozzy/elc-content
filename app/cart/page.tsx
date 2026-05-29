@@ -44,63 +44,44 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [removing, setRemoving] = useState<string | null>(null);
 
-  const [cartId, setCartId] = useState<string | null>(null);
+  const loadCart = async () => {
+    const cartId = getStoredCartId();
 
-  useEffect(() => {
-  let cancelled = false;
-
-  const run = async () => {
-    const id = getStoredCartId();
-
-    if (!id) {
+    if (!cartId) {
+      setCart(null);
       setLoading(false);
       return;
     }
 
-    const cartData = await getCartAction(id);
-
-    if (cancelled) return;
+    const cartData = await getCartAction(cartId);
 
     setCart(cartData);
     setLoading(false);
   };
 
-  run();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
-
-  // fetch cart when cartId is available
   useEffect(() => {
-  let cancelled = false;
+    let cancelled = false;
 
-  const run = async () => {
-    const id = getStoredCartId();
-    setCartId(id);
+    const run = async () => {
+      if (!cancelled) await loadCart();
+    };
 
-    if (!id) {
-      if (!cancelled) setLoading(false);
-      return;
-    }
+    run();
 
-    const cartData = await getCartAction(id);
+    const handler = () => {
+      loadCart();
+    };
 
-    if (cancelled) return;
+    window.addEventListener("cart:updated", handler);
 
-    setCart(cartData);
-    setLoading(false);
-  };
-
-  run();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("cart:updated", handler);
+    };
+  }, []);
 
   const removeItem = async (lineId: string) => {
+    const cartId = getStoredCartId();
     if (!cartId) return;
 
     setRemoving(lineId);
@@ -110,6 +91,9 @@ export default function CartPage() {
     setCart(updated);
 
     setRemoving(null);
+
+    // 🔥 IMPORTANT: sync header + other components
+    window.dispatchEvent(new Event("cart:updated"));
   };
 
   if (loading) {
