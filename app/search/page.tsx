@@ -53,13 +53,27 @@ export default async function SearchPage({
   return (
     <div className="mx-auto max-w-7xl px-4">
       <section className="py-10 md:py-14">
-        <h1 className="text-3xl font-bold md:text-5xl">
-          Search results
-        </h1>
+        <div className="relative inline-block overflow-hidden">
+          <h1 className="relative text-4xl font-black uppercase tracking-tight text-black md:text-6xl">
+            Search results
+          </h1>
 
+          {/* SHIMMER */}
+          <div
+            className="
+              absolute inset-0
+              -translate-x-full
+              animate-[shimmer_5s_infinite]
+              bg-gradient-to-r
+              from-transparent
+              via-white/70
+              to-transparent
+            "
+          />
+        </div>
         <p className="mt-2 text-gray-600">
           Results for:{" "}
-          <span className="font-medium text-black">{q}</span>
+          <span className="font-black text-black">{q}</span>
         </p>
       </section>
 

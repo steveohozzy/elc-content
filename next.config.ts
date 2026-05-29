@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -9,10 +9,14 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "*.myshopify.com",
+        hostname: "**.myshopify.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

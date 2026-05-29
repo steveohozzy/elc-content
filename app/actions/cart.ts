@@ -33,3 +33,53 @@ export async function getCartAction(cartId: string) {
 
   return res.data.cart;
 }
+
+const REMOVE_FROM_CART = `
+  mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart {
+        id
+        checkoutUrl
+        totalQuantity
+        lines(first: 50) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  product {
+                    title
+                    handle
+                  }
+                  image {
+                    url
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+          }
+        }
+        cost {
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+        }
+      }
+    }
+  }
+`;
+
+export async function removeCartItemAction(cartId: string, lineId: string) {
+  const res = await shopifyFetch(REMOVE_FROM_CART, {
+    cartId,
+    lineIds: [lineId],
+  });
+
+  return res?.data?.cartLinesRemove?.cart;
+}

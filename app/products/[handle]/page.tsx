@@ -77,9 +77,24 @@ const price = variant?.price?.amount || "0.00";
         <div className="flex flex-col gap-6">
           
           {/* TITLE */}
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
+          <div className="relative inline-block overflow-hidden">
+          <h1 className="relative text-2xl font-black uppercase tracking-tight text-black md:text-4xl">
             {product.title}
           </h1>
+
+          {/* SHIMMER */}
+          <div
+            className="
+              absolute inset-0
+              -translate-x-full
+              animate-[shimmer_5s_infinite]
+              bg-gradient-to-r
+              from-transparent
+              via-white/70
+              to-transparent
+            "
+          />
+        </div>
 
           {/* PRICE */}
           <div className="flex items-center gap-3">
@@ -97,14 +112,14 @@ const price = variant?.price?.amount || "0.00";
           </div>
 
           {/* BUY BOX */}
-          <div className="rounded-2xl border bg-gray-50 p-6">
+          <div className="rounded-2xl border border-gray-400 bg-gray-50 p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
                   ● In stock
                 </span>
 
-                <span className="text-sm text-gray-500">
+                <span className="text-sm font-semibold text-gray-500">
                   Ready to ship today
                 </span>
               </div>
@@ -118,25 +133,25 @@ const price = variant?.price?.amount || "0.00";
           {/* EXTRA INFO */}
           <div className="grid grid-cols-2 gap-2">
             {/* Fast delivery */}
-            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-black hover:text-white hover:scale-[1.02]">
+            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-gray-600 hover:text-white hover:scale-[1.02]">
               <span className="text-sm">🚚</span>
               <span>Fast delivery</span>
             </div>
 
             {/* Secure checkout */}
-            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-black hover:text-white hover:scale-[1.02]">
+            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-gray-600 hover:text-white hover:scale-[1.02]">
               <span className="text-sm">🔒</span>
               <span>Secure checkout</span>
             </div>
 
             {/* Returns */}
-            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-black hover:text-white hover:scale-[1.02]">
+            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-gray-600 hover:text-white hover:scale-[1.02]">
               <span className="text-sm">🔁</span>
               <span>Easy returns</span>
             </div>
 
             {/* Trust */}
-            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-black hover:text-white hover:scale-[1.02]">
+            <div className="group flex items-center gap-2 rounded-full bg-gray-100/70 px-4 py-2 text-xs font-medium text-gray-700 transition-all duration-300 hover:bg-gray-600 hover:text-white hover:scale-[1.02]">
               <span className="text-sm">⭐</span>
               <span>Trusted store</span>
             </div>

@@ -26,6 +26,7 @@ export default function SearchClient({
 }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("default");
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const maxProductPrice = useMemo(() => {
     return Math.max(
@@ -69,37 +70,175 @@ export default function SearchClient({
 
   return (
     <div className="space-y-6">
-      {/* FILTER BAR */}
-      <div className="flex flex-col gap-3 rounded-2xl border bg-white p-4 md:flex-row md:items-center md:justify-between">
+      {/* ================= FILTER BAR ================= */}
+      <div className="sticky top-20 z-40 rounded-2xl border border-white/10 bg-black/70 backdrop-blur-2xl">
 
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search products..."
-          className="w-full rounded-full border px-4 py-2 text-sm md:w-64"
-        />
+        {/* MOBILE BAR */}
+        <div className="flex items-center justify-between p-3 md:hidden">
+          <div className="text-xs text-gray-300">
+            {filtered.length} items
+          </div>
 
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className="rounded-full border px-3 py-2 text-sm"
-        >
-          <option value="default">Default</option>
-          <option value="low">Price: Low → High</option>
-          <option value="high">Price: High → Low</option>
-        </select>
+          <button
+            onClick={() => setMobileFiltersOpen(true)}
+            className="rounded-full border border-white/15 bg-black/40 px-4 py-2 text-xs text-white"
+          >
+            Filters
+          </button>
+        </div>
 
-        <div className="flex items-center gap-2 text-sm">
-          <span>Max £{maxPrice}</span>
-          <input
-            type="range"
-            min="0"
-            max={maxProductPrice}
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-          />
+        {/* DESKTOP BAR */}
+        <div className="hidden flex-col gap-4 p-4 md:flex md:flex-row md:items-center md:justify-between">
+
+          {/* SEARCH */}
+          <div className="relative w-full md:w-72">
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Filter results..."
+              className="
+                w-full rounded-full
+                border border-white/15
+                bg-black/40
+                px-5 py-3 pl-10
+                text-sm text-white
+                placeholder:text-gray-400
+                outline-none
+                transition
+                focus:border-white/40
+                focus:bg-black/60
+                focus:ring-2 focus:ring-white/10
+              "
+            />
+
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              🔍
+            </div>
+          </div>
+
+          {/* SORT */}
+          <div className="relative">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="
+                appearance-none rounded-full
+                border border-white/15
+                bg-black/40
+                px-5 py-3 pr-10
+                text-sm text-white
+                outline-none
+                transition
+                focus:border-white/40
+                focus:bg-black/60
+                focus:ring-2 focus:ring-white/10
+              "
+            >
+              <option value="default">Default</option>
+              <option value="low">Price: Low → High</option>
+              <option value="high">Price: High → Low</option>
+            </select>
+
+            <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+              ▾
+            </div>
+          </div>
+
+          {/* PRICE */}
+          <div className="flex w-full flex-col gap-2 md:w-72">
+
+            <div className="flex items-center justify-between text-xs text-gray-300">
+              <span>Max Price</span>
+              <span className="font-semibold text-white">
+                £{maxPrice}
+              </span>
+            </div>
+
+            <input
+              type="range"
+              min={0}
+              max={maxProductPrice}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/20"
+            />
+          </div>
+
         </div>
       </div>
+
+      {/* ================= MOBILE FILTER SHEET ================= */}
+      {mobileFiltersOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+
+          {/* BACKDROP */}
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setMobileFiltersOpen(false)}
+          />
+
+          {/* PANEL */}
+          <div className="absolute bottom-0 left-0 right-0 rounded-t-2xl border border-white/10 bg-black p-5">
+
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-white">
+                Filters
+              </h2>
+
+              <button
+                onClick={() => setMobileFiltersOpen(false)}
+                className="text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* SEARCH */}
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search gear..."
+              className="
+                mb-3 w-full rounded-full
+                border border-white/15
+                bg-black/40 px-4 py-3
+                text-sm text-white
+                placeholder:text-gray-400
+              "
+            />
+
+            {/* SORT */}
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="
+                mb-3 w-full rounded-full
+                border border-white/15
+                bg-black/40 px-4 py-3
+                text-sm text-white
+              "
+            >
+              <option value="default">Default</option>
+              <option value="low">Price: Low → High</option>
+              <option value="high">Price: High → Low</option>
+            </select>
+
+            {/* PRICE */}
+            <div className="text-xs text-gray-300">
+              Max £{maxPrice}
+            </div>
+
+            <input
+              type="range"
+              min={0}
+              max={maxProductPrice}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="mt-2 w-full"
+            />
+          </div>
+        </div>
+      )}
 
       {/* GRID */}
       <div className="grid grid-cols-2 gap-4 pb-14 md:grid-cols-4 md:gap-6">

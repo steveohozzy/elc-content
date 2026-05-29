@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { getStoredCartId } from "@/lib/cart";
-import { getCartAction } from "@/app/actions/cart";
+import { getCartAction, removeCartItemAction } from "@/app/actions/cart";
 
 type Cart = {
   checkoutUrl: string;
@@ -17,6 +18,7 @@ type Cart = {
         merchandise: {
           product: {
             title: string;
+            handle: string;
           };
           image: {
             url: string;
@@ -40,24 +42,33 @@ type Cart = {
 export default function CartPage() {
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
+  const [removing, setRemoving] = useState<string | null>(null);
+
+  const cartId = getStoredCartId();
+
+  const loadCart = async () => {
+    if (!cartId) return;
+
+    const cartData = await getCartAction(cartId);
+    setCart(cartData);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    async function loadCart() {
-      const cartId = getStoredCartId();
-
-      if (!cartId) {
-        setLoading(false);
-        return;
-      }
-
-      const cartData = await getCartAction(cartId);
-
-      setCart(cartData);
-      setLoading(false);
-    }
-
     loadCart();
   }, []);
+
+  const removeItem = async (lineId: string) => {
+    if (!cartId) return;
+
+    setRemoving(lineId);
+
+    const updated = await removeCartItemAction(cartId, lineId);
+
+    setCart(updated);
+
+    setRemoving(null);
+  };
 
   if (loading) {
     return (
@@ -70,10 +81,7 @@ export default function CartPage() {
   if (!cart || cart.totalQuantity === 0) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-20 text-center">
-        <h1 className="text-3xl font-bold">
-          Your cart is empty
-        </h1>
-
+        <h1 className="text-3xl font-bold">Your cart is empty</h1>
         <p className="mt-2 text-gray-600">
           Add some products to get started.
         </p>
@@ -84,85 +92,81 @@ export default function CartPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       {/* TITLE */}
-      <h1 className="mb-8 text-4xl font-bold">
-        Your Cart
-      </h1>
+      <h1 className="mb-8 text-4xl font-bold">Your Cart</h1>
 
       <div className="grid gap-6">
         {/* ITEMS */}
         {cart.lines.edges.map(({ node }) => (
-          <div
-            key={node.id}
-            className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
-          >
-            {/* IMAGE */}
-            <div className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
-              <Image
-                src={
-                  node.merchandise.image?.url
-                }
-                width={150}
-                height={150}
-                alt={
-                  node.merchandise.product.title
-                }
-                className="h-full w-full object-cover"
-              />
-            </div>
+      <div
+        key={node.id}
+        className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+      >
+        {/* IMAGE LINK */}
+        <Link
+          href={`/products/${node.merchandise.product.handle}`}
+          className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100"
+        >
+          <Image
+            src={node.merchandise.image?.url}
+            width={150}
+            height={150}
+            alt={node.merchandise.product.title}
+            className="h-full w-full object-cover"
+          />
+        </Link>
 
-            {/* DETAILS */}
-            <div className="flex flex-1 flex-col justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">
-                  {
-                    node.merchandise.product
-                      .title
-                  }
-                </h2>
+        {/* DETAILS */}
+        <div className="flex flex-1 flex-col justify-between">
+          <div>
+            {/* TITLE LINK */}
+            <Link
+              href={`/products/${node.merchandise.product.handle}`}
+              className="text-lg font-semibold"
+            >
+              {node.merchandise.product.title}
+            </Link>
 
-                <p className="mt-1 text-sm text-gray-600">
-                  Quantity: {node.quantity}
-                </p>
-              </div>
-
-              <p className="text-base font-bold">
-                {
-                  node.merchandise.price
-                    .currencyCode
-                }{" "}
-                {
-                  node.merchandise.price.amount
-                }
-              </p>
-            </div>
+            <p className="mt-1 text-sm text-gray-600">
+              Quantity: {node.quantity}
+            </p>
           </div>
-        ))}
+
+          <p className="text-base font-bold">
+            {node.merchandise.price.currencyCode}{" "}
+            {node.merchandise.price.amount}
+          </p>
+        </div>
+
+        {/* REMOVE BUTTON */}
+        <button
+          disabled={removing === node.id}
+          onClick={() => removeItem(node.id)}
+          className="self-start text-xs text-gray-500 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          {removing === node.id ? "Removing..." : "Remove"}
+        </button>
+      </div>
+    ))}
       </div>
 
       {/* SUMMARY */}
       <div className="mt-10 rounded-xl border border-gray-200 bg-gray-50 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">
-            Subtotal
-          </h2>
+          <h2 className="text-xl font-bold">Subtotal</h2>
 
           <p className="text-xl font-bold">
-            {
-              cart.cost.subtotalAmount
-                .currencyCode
-            }{" "}
-            {
-              cart.cost.subtotalAmount.amount
-            }
+            {cart.cost.subtotalAmount.currencyCode}{" "}
+            {cart.cost.subtotalAmount.amount}
           </p>
         </div>
 
-        <a
+        <Link
           href={cart.checkoutUrl}
-          className="mt-6 block w-full rounded-lg bg-black py-3 text-center text-white transition hover:bg-gray-800"
+          className="group mt-6 block w-full rounded-xl bg-black px-6 py-4 text-center font-semibold text-white transition hover:scale-[1.02] relative"
         >
+          <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-gradient-to-r from-white/10 via-white/5 to-white/10" />
           Checkout
-        </a>
+        </Link>
       </div>
     </div>
   );
