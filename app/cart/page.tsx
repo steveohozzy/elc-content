@@ -44,19 +44,61 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [removing, setRemoving] = useState<string | null>(null);
 
-  const cartId = getStoredCartId();
+  const [cartId, setCartId] = useState<string | null>(null);
 
-  const loadCart = async () => {
-    if (!cartId) return;
+  useEffect(() => {
+  let cancelled = false;
 
-    const cartData = await getCartAction(cartId);
+  const run = async () => {
+    const id = getStoredCartId();
+
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const cartData = await getCartAction(id);
+
+    if (cancelled) return;
+
     setCart(cartData);
     setLoading(false);
   };
 
+  run();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
+  // fetch cart when cartId is available
   useEffect(() => {
-    loadCart();
-  }, []);
+  let cancelled = false;
+
+  const run = async () => {
+    const id = getStoredCartId();
+    setCartId(id);
+
+    if (!id) {
+      if (!cancelled) setLoading(false);
+      return;
+    }
+
+    const cartData = await getCartAction(id);
+
+    if (cancelled) return;
+
+    setCart(cartData);
+    setLoading(false);
+  };
+
+  run();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   const removeItem = async (lineId: string) => {
     if (!cartId) return;
@@ -91,65 +133,58 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
-      {/* TITLE */}
       <h1 className="mb-8 text-4xl font-bold">Your Cart</h1>
 
       <div className="grid gap-6">
-        {/* ITEMS */}
         {cart.lines.edges.map(({ node }) => (
-      <div
-        key={node.id}
-        className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
-      >
-        {/* IMAGE LINK */}
-        <Link
-          href={`/products/${node.merchandise.product.handle}`}
-          className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100"
-        >
-          <Image
-            src={node.merchandise.image?.url}
-            width={150}
-            height={150}
-            alt={node.merchandise.product.title}
-            className="h-full w-full object-cover"
-          />
-        </Link>
-
-        {/* DETAILS */}
-        <div className="flex flex-1 flex-col justify-between">
-          <div>
-            {/* TITLE LINK */}
+          <div
+            key={node.id}
+            className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+          >
             <Link
               href={`/products/${node.merchandise.product.handle}`}
-              className="text-lg font-semibold"
+              className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100"
             >
-              {node.merchandise.product.title}
+              <Image
+                src={node.merchandise.image?.url}
+                width={150}
+                height={150}
+                alt={node.merchandise.product.title}
+                className="h-full w-full object-cover"
+              />
             </Link>
 
-            <p className="mt-1 text-sm text-gray-600">
-              Quantity: {node.quantity}
-            </p>
+            <div className="flex flex-1 flex-col justify-between">
+              <div>
+                <Link
+                  href={`/products/${node.merchandise.product.handle}`}
+                  className="text-lg font-semibold"
+                >
+                  {node.merchandise.product.title}
+                </Link>
+
+                <p className="mt-1 text-sm text-gray-600">
+                  Quantity: {node.quantity}
+                </p>
+              </div>
+
+              <p className="text-base font-bold">
+                {node.merchandise.price.currencyCode}{" "}
+                {node.merchandise.price.amount}
+              </p>
+            </div>
+
+            <button
+              disabled={removing === node.id}
+              onClick={() => removeItem(node.id)}
+              className="text-xs text-gray-500 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {removing === node.id ? "Removing..." : "Remove"}
+            </button>
           </div>
-
-          <p className="text-base font-bold">
-            {node.merchandise.price.currencyCode}{" "}
-            {node.merchandise.price.amount}
-          </p>
-        </div>
-
-        {/* REMOVE BUTTON */}
-        <button
-          disabled={removing === node.id}
-          onClick={() => removeItem(node.id)}
-          className="self-start text-xs text-gray-500 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-        >
-          {removing === node.id ? "Removing..." : "Remove"}
-        </button>
-      </div>
-    ))}
+        ))}
       </div>
 
-      {/* SUMMARY */}
       <div className="mt-10 rounded-xl border border-gray-200 bg-gray-50 p-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold">Subtotal</h2>
@@ -161,10 +196,9 @@ export default function CartPage() {
         </div>
 
         <Link
-          href={cart.checkoutUrl}
-          className="group mt-6 block w-full rounded-xl bg-black px-6 py-4 text-center font-semibold text-white transition hover:scale-[1.02] relative"
+          href="/checkout"
+          className="mt-6 block w-full rounded-xl bg-black px-6 py-4 text-center font-semibold text-white"
         >
-          <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-gradient-to-r from-white/10 via-white/5 to-white/10" />
           Checkout
         </Link>
       </div>
