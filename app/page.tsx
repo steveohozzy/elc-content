@@ -67,6 +67,12 @@ export default async function Home() {
           {/* TITLE */}
           <h1 className="max-w-6xl text-5xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
             {hero?.title || "Ride Beyond"}
+            {hero?.titleAccent &&
+              <span className="block text-white/60">
+                
+                {hero?.titleAccent || "The Limits"}
+              </span>
+            }
           </h1>
 
           {/* SUBTITLE */}
