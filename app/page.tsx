@@ -54,7 +54,7 @@ export default async function Home() {
         </div>
 
         {/* OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/60 to-black" />
 
         {/* CONTENT */}
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 text-center">
