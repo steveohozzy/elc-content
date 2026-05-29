@@ -154,11 +154,11 @@ export default function ProductMediaGallery({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="pt-2 mb-2">
 
       {/* ================= MAIN ================= */}
       <div
-        className="relative aspect-square overflow-hidden rounded-2xl border bg-white select-none"
+        className="relative aspect-square overflow-hidden rounded-2xl border border-gray-200 bg-white select-none shadow-md"
         style={{ touchAction: "pan-y" }}
       >
         {/* TRACK */}
@@ -191,26 +191,26 @@ export default function ProductMediaGallery({
         {/* NAV ARROWS */}
         <button
           onClick={() => goTo(active - 1)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 text-white w-10 h-10 rounded-full"
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 text-white w-10 h-10 rounded-full cursor-pointer transition-all duration-300 hover:bg-black hover:text-white hover:scale-110"
         >
           ‹
         </button>
 
         <button
           onClick={() => goTo(active + 1)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 text-white w-10 h-10 rounded-full"
+          className="absolute right-2 top-1/2 -translate-y-1/2  z-20 bg-black/60 text-white w-10 h-10 rounded-full cursor-pointer transition-all duration-300 hover:bg-black hover:text-white hover:scale-110"
         >
           ›
         </button>
       </div>
 
       {/* ================= THUMBNAILS ================= */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="flex gap-2 overflow-x-auto p-2">
         {items.map((item, i) => (
           <button
             key={i}
             onClick={() => changeSlide(i)}
-            className={`h-20 w-20 flex-shrink-0 rounded-lg border overflow-hidden ${
+            className={`cursor-pointer h-20 w-20 flex-shrink-0 rounded-lg border overflow-hidden transition hover:shadow-sm hover:scale-[1.02] ${
               i === active ? "border-black" : "border-gray-200"
             }`}
           >

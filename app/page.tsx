@@ -9,15 +9,12 @@ type ProductNode = {
   title: string;
   handle: string;
   images: {
-    edges: {
-      node: {
-        url: string;
-      };
-    }[];
+    edges: { node: { url: string } }[];
   };
-  priceRange: {
-    minVariantPrice: {
+  priceRange?: {
+    minVariantPrice?: {
       amount: string;
+      currencyCode: string;
     };
   };
 };
@@ -98,11 +95,8 @@ export default async function Home() {
               </h3>
 
               <p className="mt-2 text-lg font-bold">
-                £
-                {
-                  node.priceRange
-                    .minVariantPrice.amount
-                }
+                {node.priceRange?.minVariantPrice?.currencyCode}{" "}
+                {node.priceRange?.minVariantPrice?.amount}
               </p>
             </div>
           </Link>
