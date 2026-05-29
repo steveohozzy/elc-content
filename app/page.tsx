@@ -1,5 +1,6 @@
 import { shopifyFetch } from "@/lib/shopify";
-import { GET_PRODUCTS } from "@/lib/queries";
+import { contentfulFetch } from "@/lib/contentful";
+import { GET_PRODUCTS, GET_HOMEPAGE_HERO } from "@/lib/queries";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -20,28 +21,36 @@ type ProductNode = {
 };
 
 export default async function Home() {
-  const data = await shopifyFetch(
-    GET_PRODUCTS
-  );
+  const [shopifyData, contentfulData] = await Promise.all([
+    shopifyFetch(GET_PRODUCTS),
+    contentfulFetch(GET_HOMEPAGE_HERO),
+  ]);
 
   const products: { node: ProductNode }[] =
-    data?.data?.products?.edges ?? [];
+    shopifyData?.data?.products?.edges ?? [];
+
+  const hero = contentfulData?.data?.homepageHeroCollection?.items?.[0];
 
   return (
     <div className="mx-auto">
+
       {/* HERO */}
       <section className="relative overflow-hidden bg-black py-24 md:py-36">
 
         {/* BACKGROUND IMAGE */}
         <div className="absolute inset-0">
           <Image
-  src="https://images.unsplash.com/photo-1590461283969-47fedf408cfd?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-  alt="Snowboarder riding in the mountains"
-  width={1920}
-  height={1080}
-  priority
-  className="h-full w-full object-cover opacity-60"
-/>
+            src={
+              hero?.backgroundImage?.url
+                ? `${hero.backgroundImage.url}`
+                : "https://images.unsplash.com/photo-1590461283969-47fedf408cfd?fm=jpg&q=60&w=3000&auto=format&fit=crop"
+            }
+            alt={hero?.backgroundImage?.title || "Hero image"}
+            width={1920}
+            height={1080}
+            priority
+            className="h-full w-full object-cover opacity-60"
+          />
         </div>
 
         {/* OVERLAY */}
@@ -50,41 +59,37 @@ export default async function Home() {
         {/* CONTENT */}
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 text-center">
 
-          {/* TOP TAG */}
+          {/* TAG */}
           <div className="mb-6 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs font-medium uppercase tracking-[0.35em] text-white backdrop-blur-md">
-            Winter 2026 Collection
+            {hero?.tagline || "Winter 2026 Collection"}
           </div>
 
-          {/* HERO TITLE */}
+          {/* TITLE */}
           <h1 className="max-w-6xl text-5xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
-            Ride Beyond
-            <span className="block text-white/60">
-              The Limits
-            </span>
+            {hero?.title || "Ride Beyond"}
           </h1>
 
-          {/* SUBTEXT */}
+          {/* SUBTITLE */}
           <p className="mt-8 max-w-2xl text-base leading-relaxed text-gray-300 md:text-xl">
-            Premium snowboards, outerwear, and mountain gear
-            built for riders chasing powder, park laps, and
-            alpine adventure.
+            {hero?.subtitle ||
+              "Premium snowboards, outerwear, and mountain gear built for riders chasing powder, park laps, and alpine adventure."}
           </p>
 
           {/* BUTTONS */}
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
 
             <Link
-              href="/collections/hydrogen"
+              href={hero?.ctaPrimaryLink || "/collections/hydrogen"}
               className="rounded-full bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-black transition duration-300 hover:scale-105 hover:bg-white/10 hover:text-white hover:border-white/30 hover:border"
             >
-              Shop Hyrdogen
+              {hero?.ctaPrimaryText || "Shop Now"}
             </Link>
 
             <Link
-              href="/collections/automated-collection"
+              href={hero?.ctaSecondaryLink || "/collections/automated-collection"}
               className="rounded-full border border-white/30 bg-white/10 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition duration-300 hover:bg-white hover:text-black hover:scale-105"
             >
-              Shop automated
+              {hero?.ctaSecondaryText || "Explore"}
             </Link>
 
           </div>
@@ -92,8 +97,8 @@ export default async function Home() {
 
         {/* BOTTOM FADE */}
         <div className="absolute bottom-0 left-0 h-32 w-full bg-gradient-to-t from-black to-transparent" />
-
       </section>
+
       {/* NEW ARRIVALS STRIP */}
 <section className="mx-auto mt-16 max-w-7xl px-4">
   {/* PRODUCTS HEADER */}
