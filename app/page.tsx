@@ -92,7 +92,7 @@ export default async function Home() {
 
             <Link
               href={hero?.ctaPrimaryLink || "/collections/hydrogen"}
-              className="rounded-full bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-black transition duration-300 hover:scale-105 hover:bg-white/10 hover:text-white hover:border-white/30 hover:border"
+              className="rounded-full border border-white bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-black transition duration-300 hover:scale-105 hover:bg-white/10 hover:text-white hover:border-white/30 hover:border"
             >
               {hero?.ctaPrimaryText || "Shop Now"}
             </Link>
@@ -277,7 +277,7 @@ export default async function Home() {
 
             <Link
               href={lifestyle?.ctaLink || "/collections/hydrogen"}
-              className="mt-6 w-fit rounded-full bg-white px-6 py-3 text-sm font-semibold text-black"
+              className="mt-6 w-fit rounded-full border border-white bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-black transition duration-300 hover:scale-105 hover:bg-black/40 hover:text-white hover:border-white/30"
             >
               {lifestyle?.ctaText || "Shop Collection"}
             </Link>
