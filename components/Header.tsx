@@ -162,8 +162,6 @@ export default function Header({
 
         </div>
       </header>
-
-      <MobileMenu collections={collections} />
     </>
   );
 }
