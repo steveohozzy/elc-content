@@ -4,6 +4,7 @@ import { GET_PRODUCTS, GET_HOMEPAGE_HERO, GET_HOMEPAGE_LIFESTYLE, GET_SECTION } 
 
 import Link from "next/link";
 import Image from "next/image";
+import FeaturedProductsCarousel from "@/components/FeaturedCarousel";
 
 type ProductNode = {
   id: string;
@@ -22,7 +23,9 @@ type ProductNode = {
 
 export default async function Home() {
   const [shopifyData, heroData, lifestyleData, sectionData] = await Promise.all([
-    shopifyFetch(GET_PRODUCTS),
+    shopifyFetch(GET_PRODUCTS, {
+      first: 8,
+    }),
     contentfulFetch(GET_HOMEPAGE_HERO),
     contentfulFetch(GET_HOMEPAGE_LIFESTYLE),
     contentfulFetch(GET_SECTION, {
@@ -158,65 +161,8 @@ export default async function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4  md:grid-cols-4 md:gap-6 max-w-7xl px-4 mt-6 mx-auto">
-          {products.slice(0, 4).map(({ node }) => (
-            <Link
-              key={node.id}
-              href={`/products/${node.handle}`}
-              className="group overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:shadow-lg"
-            >
-              {/* IMAGE */}
-              <div className="aspect-square overflow-hidden bg-gray-100">
-                {/* IMAGE */}
-                <div className="relative aspect-square overflow-hidden bg-gray-100">
-                  {/* First Image */}
-                  <Image
-                    src={node.images.edges[0]?.node.url}
-                    width={600}
-                    height={600}
-                    alt={node.title}
-                    className="
-                      absolute inset-0
-                      h-full w-full object-cover
-                      transition duration-500
-                      group-hover:scale-110
-                      group-hover:opacity-0
-                    "
-                  />
-
-                  {/* Second Image */}
-                  {node.images.edges[1]?.node.url && (
-                    <Image
-                      src={node.images.edges[1]?.node.url}
-                      width={600}
-                      height={600}
-                      alt={node.title}
-                      className="
-                        absolute inset-0
-                        h-full w-full object-cover
-                        opacity-0
-                        transition duration-500
-                        group-hover:scale-110
-                        group-hover:opacity-100
-                      "
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* CONTENT */}
-              <div className="p-4">
-                <h3 className="line-clamp-2 text-sm font-medium md:text-base">
-                  {node.title}
-                </h3>
-
-                <p className="mt-2 text-lg font-bold">
-                  {node.priceRange?.minVariantPrice?.currencyCode}{" "}
-                  {node.priceRange?.minVariantPrice?.amount}
-                </p>
-              </div>
-            </Link>
-          ))}
+        <div className="max-w-7xl px-4 mt-6 mx-auto">
+          <FeaturedProductsCarousel products={products} />
         </div>
       </section>
       {/* CATEGORIES */}
