@@ -213,6 +213,63 @@ const pageInfo =
         </div>
       </div>
 
+      {/* ================= MOBILE FILTER SHEET ================= */}
+      {mobileFiltersOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setMobileFiltersOpen(false)}
+          />
+
+          <div className="absolute bottom-0 left-0 right-0 rounded-t-2xl border border-white/10 bg-black p-5">
+
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-white">
+                Filters
+              </h2>
+
+              <button
+                onClick={() => setMobileFiltersOpen(false)}
+                className="text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search gear..."
+              className="mb-3 w-full rounded-full border border-white/15 bg-black/40 px-4 py-3 text-sm text-white"
+            />
+
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="mb-3 w-full rounded-full border border-white/15 bg-black/40 px-4 py-3 text-sm text-white"
+            >
+              <option value="default">Default</option>
+              <option value="low">Price: Low → High</option>
+              <option value="high">Price: High → Low</option>
+            </select>
+
+            <div className="text-xs text-gray-300">
+              Max £{maxPrice}
+            </div>
+
+            <input
+              type="range"
+              min={0}
+              max={maxProductPrice}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="mt-2 w-full"
+            />
+          </div>
+        </div>
+      )}
+
       {/* GRID */}
       <div className="grid grid-cols-2 gap-4 pb-6 md:grid-cols-4 md:gap-6">
 

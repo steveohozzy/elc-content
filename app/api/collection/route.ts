@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       },
     });
 
-  } catch (err) {
+  } catch {
     return Response.json({
       data: {
         edges: [],

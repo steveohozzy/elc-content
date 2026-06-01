@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import SearchPreview from "./SearchPreview";
-import CartIcon from "./CartIcon";
 
 type Collection = {
   node: {
@@ -97,7 +96,9 @@ export default function MobileMenu({
 
             {/* SEARCH */}
             <div className="mb-8">
-              <SearchPreview />
+              <SearchPreview
+                onSearch={() => setMobileMenuOpen(false)}
+              />
             </div>
 
             {/* NAV */}

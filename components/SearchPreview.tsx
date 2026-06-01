@@ -23,7 +23,11 @@ type ProductNode = {
   };
 };
 
-export default function SearchPreview() {
+export default function SearchPreview({
+  onSearch,
+}: {
+  onSearch?: () => void;
+}) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ProductNode[]>([]);
   const [open, setOpen] = useState(false);
@@ -86,8 +90,10 @@ export default function SearchPreview() {
 
     if (!query.trim()) return;
 
-    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+    onSearch?.();
     setOpen(false);
+
+    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
   return (
@@ -157,7 +163,10 @@ export default function SearchPreview() {
               ))}
               <Link
                 href={`/search?q=${encodeURIComponent(query)}`}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  onSearch?.();
+                }}
                 className="block border-t p-3 text-sm text-gray-600 hover:bg-gray-50"
               >
                 Search for “{query}” →
