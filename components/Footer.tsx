@@ -1,6 +1,16 @@
 import Link from "next/link";
+import { contentfulFetch } from "@/lib/contentful";
+import { GET_FOOTER } from "@/lib/queries";
 
-export default function Footer() {
+export default async function Footer() {
+  const footerData = await contentfulFetch(GET_FOOTER);
+
+  const footer =
+    footerData?.data?.footerCollection?.items?.[0];
+
+    console.log(
+  JSON.stringify(footerData, null, 2)
+);
   return (
     <footer className="mt-20 border-t border-black/10 bg-white">
 
@@ -26,59 +36,73 @@ export default function Footer() {
           </Link>
 
           <p className="mt-4 text-sm leading-relaxed text-gray-600">
-            Premium snowboarding gear built for performance, style, and the mountain.
+            {footer?.footerBlurb}
           </p>
         </div>
 
         {/* SHOP */}
         <div>
           <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-            Shop
+            {footer?.menu1Title}
           </h3>
 
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
-            <li className="hover:text-black transition">
-              <a href="/collections/all">All Products</a>
-            </li>
-            <li className="hover:text-black transition">
-              <a href="/collections/new">New Arrivals</a>
-            </li>
-            <li className="hover:text-black transition">
-              <a href="/collections/sale">Sale</a>
-            </li>
+            {footer?.menu1LinksCollection?.items?.map(
+              (link: { label: string; url: string }) => (
+                <li key={link.url}>
+                  <Link
+                    href={link.url}
+                    className="hover:text-black transition"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
         </div>
 
         {/* SUPPORT */}
         <div>
           <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-            Support
+            {footer?.menu2Title}
           </h3>
 
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
-            <li className="hover:text-black transition">
-              <a href="/cart">Cart</a>
-            </li>
-            <li className="hover:text-black transition">
-              <a href="/checkout">Checkout</a>
-            </li>
-            <li className="hover:text-black transition">
-              <a href="/contact">Contact</a>
-            </li>
+            {footer?.menu2LinksCollection?.items?.map(
+              (link: { label: string; url: string }) => (
+                <li key={link.url}>
+                  <Link
+                    href={link.url}
+                    className="hover:text-black transition"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
         </div>
 
         {/* TRUST */}
         <div>
           <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-            Trust
+            {footer?.menu3Title}
           </h3>
 
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
-            <li>Secure Shopify Checkout</li>
-            <li>Fast Shipping</li>
-            <li>Easy Returns</li>
-            <li>Premium Support</li>
+            {footer?.menu3LinksCollection?.items?.map(
+              (link: { label: string; url: string }) => (
+                <li key={link.url}>
+                  <Link
+                    href={link.url}
+                    className="hover:text-black transition"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
         </div>
       </div>
@@ -87,15 +111,20 @@ export default function Footer() {
       <div className="border-t border-black/10 bg-black/5">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-4 text-xs text-gray-500 md:flex-row">
 
-          <p> © {new Date().getFullYear()} Summit Snow Supply</p>
+          <p> © {new Date().getFullYear()} {footer?.copyright}</p>
 
           <div className="flex gap-6">
-            <a className="hover:text-black transition" href="/privacy">
-              Privacy
-            </a>
-            <a className="hover:text-black transition" href="/terms">
-              Terms
-            </a>
+            {footer?.copyrightBarLinksCollection?.items?.map(
+              (link: { label: string; url: string }) => (
+                  <Link
+                    key={link.url}
+                    href={link.url}
+                    className="hover:text-black transition"
+                  >
+                    {link.label}
+                  </Link>
+              )
+            )}
           </div>
 
         </div>

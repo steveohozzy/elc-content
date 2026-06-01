@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,27 +19,54 @@ type ProductNode = {
   };
 };
 
+type ShopifySearchResponse = {
+  data?: {
+    products?: {
+      edges: { node: ProductNode }[];
+      pageInfo: {
+        endCursor: string | null;
+        hasNextPage: boolean;
+      };
+    };
+  };
+};
+
 export default function SearchClient({
   products,
+  query,
+  initialCursor,
+  hasNextPage: initialHasNextPage,
 }: {
   products: ProductNode[];
+  query: string;
+  initialCursor?: string;
+  hasNextPage?: boolean;
 }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("default");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  // ✅ PAGINATION STATE
+  const [items, setItems] = useState<ProductNode[]>(products);
+  const [cursor, setCursor] = useState<string | null>(initialCursor || null);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(
+    initialHasNextPage || false
+  );
+  const [loading, setLoading] = useState(false);
+
   const maxProductPrice = useMemo(() => {
     return Math.max(
-      ...products.map((p) =>
+      ...items.map((p) =>
         parseFloat(p.priceRange?.minVariantPrice?.amount || "0")
       )
     );
-  }, [products]);
+  }, [items]);
 
   const [maxPrice, setMaxPrice] = useState(maxProductPrice);
 
+  // ---------------- FILTERS ----------------
   const filtered = useMemo(() => {
-    return products
+    return items
       .filter((p) =>
         p.title.toLowerCase().includes(search.toLowerCase())
       )
@@ -61,8 +88,46 @@ export default function SearchClient({
         if (sort === "high") return bPrice - aPrice;
         return 0;
       });
-  }, [products, search, sort, maxPrice]);
+  }, [items, search, sort, maxPrice]);
 
+  // ---------------- LOAD MORE ----------------
+  async function loadMore() {
+    if (!cursor || loading || !hasNextPage) return;
+
+    setLoading(true);
+
+    const res = await fetch("/api/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        after: cursor,
+        first: 10,
+        query,
+      }),
+    });
+
+    const json: ShopifySearchResponse = await res.json();
+
+    const edges = json?.data?.products?.edges ?? [];
+    const pageInfo = json?.data?.products?.pageInfo;
+
+    setItems((prev) => {
+      const existingIds = new Set(prev.map((p) => p.id));
+
+      const newItems = edges
+        .map((e) => e.node)
+        .filter((n) => !existingIds.has(n.id));
+
+      return [...prev, ...newItems];
+    });
+
+    setCursor(pageInfo?.endCursor ?? null);
+    setHasNextPage(!!pageInfo?.hasNextPage);
+
+    setLoading(false);
+  }
+
+  // ---------------- UI (UNCHANGED) ----------------
   return (
     <div className="space-y-6">
 
@@ -86,7 +151,6 @@ export default function SearchClient({
         {/* DESKTOP BAR */}
         <div className="hidden flex-col gap-4 p-4 md:flex md:flex-row md:items-center md:justify-between">
 
-          {/* SEARCH */}
           <div className="relative w-full md:w-72">
             <input
               value={search}
@@ -112,7 +176,6 @@ export default function SearchClient({
             </div>
           </div>
 
-          {/* SORT */}
           <div className="relative">
             <select
               value={sort}
@@ -140,7 +203,6 @@ export default function SearchClient({
             </div>
           </div>
 
-          {/* PRICE */}
           <div className="flex w-full flex-col gap-2 md:w-72">
 
             <div className="flex items-center justify-between text-xs text-gray-200">
@@ -167,13 +229,11 @@ export default function SearchClient({
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
 
-          {/* BACKDROP */}
           <div
             className="absolute inset-0 bg-black/60"
             onClick={() => setMobileFiltersOpen(false)}
           />
 
-          {/* PANEL */}
           <div className="absolute bottom-0 left-0 right-0 rounded-t-2xl border border-white/10 bg-black p-5">
 
             <div className="mb-4 flex items-center justify-between">
@@ -189,37 +249,23 @@ export default function SearchClient({
               </button>
             </div>
 
-            {/* SEARCH */}
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search gear..."
-              className="
-                mb-3 w-full rounded-full
-                border border-white/15
-                bg-black/40 px-4 py-3
-                text-sm text-white
-                placeholder:text-gray-400
-              "
+              className="mb-3 w-full rounded-full border border-white/15 bg-black/40 px-4 py-3 text-sm text-white"
             />
 
-            {/* SORT */}
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="
-                mb-3 w-full rounded-full
-                border border-white/15
-                bg-black/40 px-4 py-3
-                text-sm text-white
-              "
+              className="mb-3 w-full rounded-full border border-white/15 bg-black/40 px-4 py-3 text-sm text-white"
             >
               <option value="default">Default</option>
               <option value="low">Price: Low → High</option>
               <option value="high">Price: High → Low</option>
             </select>
 
-            {/* PRICE */}
             <div className="text-xs text-gray-300">
               Max £{maxPrice}
             </div>
@@ -236,31 +282,28 @@ export default function SearchClient({
         </div>
       )}
 
-      {/* GRID */}
+      {/* ================= GRID ================= */}
       <div className="grid grid-cols-2 gap-4 pb-14 md:grid-cols-4 md:gap-6">
-        {filtered.map((node: ProductNode) => (
+        {filtered.map((node) => (
           <Link
             key={node.id}
             href={`/products/${node.handle}`}
             className="group overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:shadow-lg"
           >
             <div className="relative aspect-square overflow-hidden bg-gray-100">
-              {/* First Image */}
+
               <Image
                 src={node.images.edges[0]?.node.url}
                 width={600}
                 height={600}
                 alt={node.title}
                 className="
-                  absolute inset-0
-                  h-full w-full object-cover
+                  absolute inset-0 h-full w-full object-cover
                   transition duration-500
-                  group-hover:scale-110
-                  group-hover:opacity-0
+                  group-hover:scale-110 group-hover:opacity-0
                 "
               />
-            
-              {/* Second Image */}
+
               {node.images.edges[1]?.node.url && (
                 <Image
                   src={node.images.edges[1]?.node.url}
@@ -268,19 +311,18 @@ export default function SearchClient({
                   height={600}
                   alt={node.title}
                   className="
-                    absolute inset-0
-                    h-full w-full object-cover
-                    opacity-0
-                    transition duration-500
-                    group-hover:scale-110
-                    group-hover:opacity-100
+                    absolute inset-0 h-full w-full object-cover
+                    opacity-0 transition duration-500
+                    group-hover:scale-110 group-hover:opacity-100
                   "
                 />
               )}
             </div>
 
             <div className="p-4">
-              <h3 className="line-clamp-2 text-sm font-medium md:text-base">{node.title}</h3>
+              <h3 className="line-clamp-2 text-sm font-medium md:text-base">
+                {node.title}
+              </h3>
 
               <p className="mt-2 text-lg font-bold">
                 {node.priceRange?.minVariantPrice?.currencyCode}{" "}
@@ -290,6 +332,20 @@ export default function SearchClient({
           </Link>
         ))}
       </div>
+
+      {/* ================= LOAD MORE ================= */}
+      {hasNextPage && (
+        <div className="flex justify-center pb-10">
+          <button
+            onClick={loadMore}
+            disabled={loading}
+            className="rounded-full border border-black/10 bg-black px-6 py-3 text-sm font-medium text-white hover:bg-black/80 transition disabled:opacity-50"
+          >
+            {loading ? "Loading..." : "Load More"}
+          </button>
+        </div>
+      )}
+
     </div>
   );
 }

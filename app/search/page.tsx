@@ -41,43 +41,37 @@ export default async function SearchPage({
 
   const data = await shopifyFetch(SEARCH_PRODUCTS, {
     query: q,
+    first: 10,
+    after: null,
   });
-
-  console.log("SEARCH RAW DATA:", JSON.stringify(data, null, 2));
 
   const products: ProductNode[] =
     data?.data?.products?.edges?.map(
       (edge: { node: ProductNode }) => edge.node
     ) ?? [];
 
+  const pageInfo = data?.data?.products?.pageInfo;
+
   return (
     <div className="mx-auto max-w-7xl px-4">
       <section className="py-10 md:py-14">
-        <div className="relative inline-block overflow-hidden">
-          <h1 className="relative text-4xl font-black uppercase tracking-tight text-black md:text-6xl">
-            Search results
-          </h1>
+        <h1 className="text-4xl font-black uppercase md:text-6xl">
+          Search results
+        </h1>
 
-          {/* SHIMMER */}
-          <div
-            className="
-              absolute inset-0
-              -translate-x-full
-              animate-[shimmer_5s_infinite]
-              bg-gradient-to-r
-              from-transparent
-              via-white/70
-              to-transparent
-            "
-          />
-        </div>
         <p className="mt-2 text-gray-600">
           Results for:{" "}
           <span className="font-black text-black">{q}</span>
         </p>
       </section>
 
-      <SearchClient products={products} />
+      <SearchClient
+        key={q}
+        products={products}
+        query={q}
+        initialCursor={pageInfo?.endCursor}
+        hasNextPage={pageInfo?.hasNextPage}
+      />
     </div>
   );
 }

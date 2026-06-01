@@ -42,7 +42,11 @@ export default function SearchPreview() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({
+        query,
+        first: 3,
+        after: null,
+      }),
       });
 
       const data = await res.json();

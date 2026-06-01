@@ -1,6 +1,6 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { contentfulFetch } from "@/lib/contentful";
-import { GET_PRODUCTS, GET_HOMEPAGE_HERO, GET_HOMEPAGE_LIFESTYLE } from "@/lib/queries";
+import { GET_PRODUCTS, GET_HOMEPAGE_HERO, GET_HOMEPAGE_LIFESTYLE, GET_SECTION } from "@/lib/queries";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -21,10 +21,13 @@ type ProductNode = {
 };
 
 export default async function Home() {
-  const [shopifyData, heroData, lifestyleData] = await Promise.all([
+  const [shopifyData, heroData, lifestyleData, sectionData] = await Promise.all([
     shopifyFetch(GET_PRODUCTS),
     contentfulFetch(GET_HOMEPAGE_HERO),
     contentfulFetch(GET_HOMEPAGE_LIFESTYLE),
+    contentfulFetch(GET_SECTION, {
+      sectionKey: "homepage-section-1",
+    }),
   ]);
 
   const products: { node: ProductNode }[] =
@@ -32,6 +35,9 @@ export default async function Home() {
 
   const hero = heroData?.data?.homepageHeroCollection?.items?.[0];
   const lifestyle = lifestyleData?.data?.lifestyleBannerCollection?.items?.[0];
+
+  const featuredSection =
+  sectionData?.data?.sectionIntroCollection?.items?.[0];
 
   return (
     <div className="mx-auto">
@@ -121,14 +127,14 @@ export default async function Home() {
             <div className="h-px w-12 bg-gray-300" />
 
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-              Featured Collection
+              {featuredSection?.subtitle || "Featured Collection"}
             </span>
           </div>
 
           {/* TITLE */}
           <div className="relative inline-block overflow-hidden">
             <h2 className="relative text-4xl font-black uppercase tracking-tight text-black md:text-6xl">
-              Snow Ready Gear
+              {featuredSection?.title || "Snow Ready Gear"}
             </h2>
 
             {/* SHIMMER */}
@@ -147,8 +153,8 @@ export default async function Home() {
 
           {/* SUBTEXT */}
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-600 md:text-lg">
-            Performance-driven snowboards, technical outerwear,
-            and cold-weather essentials built for mountain life.
+            {featuredSection?.blurb ||
+              "Performance-driven snowboards, technical outerwear and cold-weather essentials built for mountain life."}
           </p>
         </div>
 
