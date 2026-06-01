@@ -7,10 +7,6 @@ export default async function Footer() {
 
   const footer =
     footerData?.data?.footerCollection?.items?.[0];
-
-    console.log(
-  JSON.stringify(footerData, null, 2)
-);
   return (
     <footer className="mt-20 border-t border-black/10 bg-white">
 
