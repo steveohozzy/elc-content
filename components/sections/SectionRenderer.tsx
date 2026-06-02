@@ -119,7 +119,6 @@ export default function SectionRenderer({
   return (
     <>
       {sections?.map((section, i) => {
-        console.log(section.__typename);
         switch (section.__typename) {
           case "HomepageHero":
             return <HomeHeroSection key={i} data={section} />;

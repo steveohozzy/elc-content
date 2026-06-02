@@ -31,8 +31,6 @@ type ProductEdge = {
 export default async function ShopifyCollectionSection({ data }: Props) {
   const handle = data.collectionId;
 
-  console.log("🔥 SHOPIFY COLLECTION HANDLE:", handle);
-
   if (!handle) return null;
 
   const shopifyData = await shopifyFetch(GET_COLLECTION_PRODUCTS, {

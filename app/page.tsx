@@ -7,10 +7,6 @@ export default async function Home() {
     slug: "home",
   });
 
-  console.log(
-    JSON.stringify(data, null, 2)
-  );
-
   const page =
     data?.data?.pageCollection?.items?.[0];
 
