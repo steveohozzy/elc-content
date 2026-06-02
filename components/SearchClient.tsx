@@ -194,6 +194,7 @@ export default function SearchClient({
                 focus:bg-black/60
                 focus:ring-2 focus:ring-white/10
               "
+              id="sort"
             >
               <option value="default">Default</option>
               <option value="low">Price: Low → High</option>
@@ -266,6 +267,7 @@ export default function SearchClient({
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               className="mb-3 w-full rounded-full border border-white/15 bg-black/40 px-4 py-3 text-sm text-white"
+              id="sort"
             >
               <option value="default">Default</option>
               <option value="low">Price: Low → High</option>

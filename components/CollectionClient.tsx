@@ -190,6 +190,7 @@ const pageInfo =
             value={sort}
             onChange={(e) => setSort(e.target.value)}
             className="rounded-full border border-white/15 bg-black/40 px-5 py-3 text-sm text-white"
+            id="sort"
           >
             <option value="default">Default</option>
             <option value="low">Price: Low → High</option>
@@ -254,6 +255,7 @@ const pageInfo =
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               className="mb-3 w-full rounded-full border border-white/15 bg-black/40 px-4 py-3 text-sm text-white"
+              id="sort"
             >
               <option value="default">Default</option>
               <option value="low">Price: Low → High</option>
