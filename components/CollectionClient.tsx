@@ -161,7 +161,7 @@ const pageInfo =
       <div className="sticky top-20 z-40 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-2xl">
 
         <div className="flex items-center justify-between p-3 md:hidden">
-          <div className="text-xs text-gray-300">
+          <div className="text-xs text-gray-100">
             {filtered.length} items
           </div>
 

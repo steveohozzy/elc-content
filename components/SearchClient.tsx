@@ -136,7 +136,7 @@ export default function SearchClient({
 
         {/* MOBILE BAR */}
         <div className="flex items-center justify-between p-3 md:hidden">
-          <div className="text-xs text-gray-300">
+          <div className="text-xs text-gray-100">
             {filtered.length} items
           </div>
 
