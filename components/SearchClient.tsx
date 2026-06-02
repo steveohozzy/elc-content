@@ -152,6 +152,7 @@ export default function SearchClient({
         <div className="hidden flex-col gap-4 p-4 md:flex md:flex-row md:items-center md:justify-between">
 
           <div className="relative w-full md:w-72">
+            <label htmlFor="search" className="sr-only">Search</label>
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -177,6 +178,7 @@ export default function SearchClient({
           </div>
 
           <div className="relative">
+            <label htmlFor="sort" className="sr-only">Sort</label>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
@@ -249,6 +251,7 @@ export default function SearchClient({
               </button>
             </div>
 
+            <label htmlFor="search" className="sr-only">Search</label>
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -256,6 +259,7 @@ export default function SearchClient({
               className="mb-3 w-full rounded-full border border-white/15 bg-black/40 px-4 py-3 text-sm text-white"
             />
 
+            <label htmlFor="sort" className="sr-only">Sort</label>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
