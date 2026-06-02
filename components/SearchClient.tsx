@@ -214,6 +214,7 @@ export default function SearchClient({
               </span>
             </div>
 
+            <label htmlFor="max-price" className="sr-only">Max Price</label>
             <input
               type="range"
               min={0}
@@ -274,6 +275,7 @@ export default function SearchClient({
               Max £{maxPrice}
             </div>
 
+            <label htmlFor="max-price" className="sr-only">Max Price</label>
             <input
               type="range"
               min={0}

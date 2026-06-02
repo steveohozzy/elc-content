@@ -202,6 +202,7 @@ const pageInfo =
               <span className="font-semibold text-white">£{maxPrice}</span>
             </div>
 
+            <label htmlFor="max-price" className="sr-only">Max Price</label>
             <input
               type="range"
               min={0}
@@ -262,6 +263,7 @@ const pageInfo =
               Max £{maxPrice}
             </div>
 
+            <label htmlFor="max-price" className="sr-only">Max Price</label>
             <input
               type="range"
               min={0}

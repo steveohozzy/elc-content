@@ -100,6 +100,7 @@ export default function SearchPreview({
     <div ref={wrapperRef} className="relative w-full max-w-md mt-4 md:mt-0">
       {/* INPUT */}
       <form onSubmit={handleSubmit}>
+  <label htmlFor="search" className="sr-only">Search</label>
   <input
     value={query}
     onChange={(e) => {
