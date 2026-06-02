@@ -19,6 +19,21 @@ type MediaNode =
 
 type MediaEdge = { node: MediaNode };
 
+// ----------------------------
+// Shopify image size helper
+// ----------------------------
+const getShopifyImage = (url: string, width: number) => {
+  if (!url) return "";
+
+  try {
+    const u = new URL(url);
+    u.searchParams.set("width", width.toString());
+    return u.toString();
+  } catch {
+    return url;
+  }
+};
+
 const cleanYoutubeUrl = (url?: string) => {
   if (!url) return "";
 
@@ -108,19 +123,23 @@ export default function ProductMediaGallery({
     );
   }
 
-  const renderMedia = (item: MediaNode) => {
+  const renderMedia = (item: MediaNode, i?: number) => {
     switch (item.__typename) {
-      case "MediaImage":
+      case "MediaImage": {
+        const src = item.image?.url || "";
+
         return (
           <Image
-            src={item.image?.url || ""}
+            src={src}
             alt={item.image?.altText || ""}
             width={1200}
             height={1200}
+            sizes="(min-width: 768px) 50vw, 100vw"
             draggable={false}
             className="h-full w-full object-cover"
           />
         );
+      }
 
       case "Video":
         return (
@@ -156,7 +175,17 @@ export default function ProductMediaGallery({
       {/* ================= DESKTOP GRID ================= */}
       <div className="hidden md:grid grid-cols-2">
         {items.map((item, i) => {
-          const isImage = item.node.__typename === "MediaImage";
+          const node = item.node;
+
+          const isImage = node.__typename === "MediaImage";
+
+          const src =
+            node.__typename === "MediaImage"
+              ? node.image?.url || ""
+              : "";
+
+          const zoomSrc = getShopifyImage(src, 1600);
+          const gridSrc = getShopifyImage(src, 600);
 
           return (
             <div
@@ -184,13 +213,18 @@ export default function ProductMediaGallery({
                   className="h-full w-full transition-transform duration-200"
                   style={{
                     transform:
-                      zoomedIndex === i
-                        ? "scale(2)"
-                        : "scale(1)",
+                      zoomedIndex === i ? "scale(2)" : "scale(1)",
                     transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
                   }}
                 >
-                  {renderMedia(item.node)}
+                  <Image
+                    src={zoomedIndex === i ? zoomSrc : gridSrc}
+                    alt={item.node.image?.altText || ""}
+                    width={1600}
+                    height={2000}
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               ) : (
                 renderMedia(item.node)
@@ -215,7 +249,7 @@ export default function ProductMediaGallery({
           >
             {items.map((item, i) => (
               <div key={i} className="min-w-full h-full flex-shrink-0">
-                {renderMedia(item.node)}
+                {renderMedia(item.node, i)}
               </div>
             ))}
           </div>
