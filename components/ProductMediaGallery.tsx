@@ -136,6 +136,7 @@ export default function ProductMediaGallery({
             height={1200}
             sizes="(min-width: 768px) 50vw, 100vw"
             draggable={false}
+            priority
             className="h-full w-full object-cover"
           />
         );
@@ -222,6 +223,7 @@ export default function ProductMediaGallery({
                     alt={node.image?.altText || ""}
                     width={1600}
                     height={2000}
+                    priority
                     sizes="(min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover"
                   />
