@@ -4,6 +4,8 @@ import ProductMediaGallery from "@/components/ProductMediaGallery";
 import AddToCartButton from "@/components/AddToCartButton";
 import SectionRenderer from "@/components/sections/SectionRenderer";
 import { contentfulFetch } from "@/lib/contentful";
+import type { Metadata } from "next";
+import { getProductPage } from "@/lib/getProductPage";
 
 type ShopifyImageEdge = {
   node: {
@@ -11,6 +13,29 @@ type ShopifyImageEdge = {
     altText?: string;
   };
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params;
+
+  const { product } = await getProductPage(handle);
+
+  if (!product) {
+    return {
+      title: "Product not found",
+    };
+  }
+
+  return {
+    title: product.title || "Summit Snow Supply",
+    description:
+      product.description ||
+      "The one stop shop for snowboard gear and performance apparel",
+  };
+}
 
 export default async function ProductPage({
   params,
