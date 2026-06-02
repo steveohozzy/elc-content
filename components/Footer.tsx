@@ -105,7 +105,7 @@ export default async function Footer() {
 
       {/* BOTTOM BAR */}
       <div className="border-t border-black/10 bg-black/5">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-4 text-xs text-gray-500 md:flex-row">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-4 text-xs text-gray-700 md:flex-row">
 
           <p> © {new Date().getFullYear()} {footer?.copyright}</p>
 
