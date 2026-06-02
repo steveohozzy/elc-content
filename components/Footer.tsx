@@ -38,9 +38,9 @@ export default async function Footer() {
 
         {/* SHOP */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
+          <div className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
             {footer?.menu1Title}
-          </h3>
+          </div>
 
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
             {footer?.menu1LinksCollection?.items?.map(
@@ -60,9 +60,9 @@ export default async function Footer() {
 
         {/* SUPPORT */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
+          <div className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
             {footer?.menu2Title}
-          </h3>
+          </div>
 
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
             {footer?.menu2LinksCollection?.items?.map(
@@ -82,9 +82,9 @@ export default async function Footer() {
 
         {/* TRUST */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
+          <div className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
             {footer?.menu3Title}
-          </h3>
+          </div>
 
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
             {footer?.menu3LinksCollection?.items?.map(
