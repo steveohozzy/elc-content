@@ -18,8 +18,7 @@ export async function generateMetadata({
   return {
     title: section?.title || collection?.title || "Collection",
     description:
-      section?.blurb ||
-      "Premium snowboard gear and performance apparel built for riders.",
+      section?.blurb || collection?.blurb || "Premium snowboard gear and performance apparel built for riders.",
   };
 }
 
