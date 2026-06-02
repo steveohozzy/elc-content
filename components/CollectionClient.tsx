@@ -309,6 +309,7 @@ const pageInfo =
                   alt={node.title}
                   className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-500 group-hover:scale-110 group-hover:opacity-100"
                   sizes="(max-width: 768px) 50vw, 25vw"
+                  priority={index === 0}
                 />
               )}
             </div>
