@@ -72,7 +72,7 @@ export default function Header({
                     mt-1 text-[10px]
                     font-medium uppercase
                     tracking-[0.45em]
-                    text-gray-400
+                    text-gray-200
                   ">
                     Snow Supply
                   </span>
