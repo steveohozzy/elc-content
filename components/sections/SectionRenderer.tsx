@@ -107,55 +107,99 @@ type TrustStripData = {
 
 type Section = HomepageHeroData | HeroSectionData | TextSectionData | CTASectionData | ShopifyCollectionSectionData | LifestyleBannerData | SectionIntroData | FeaturedCategoriesData | TrustStripData;
 
-/* ---------------------------
-   RENDERER
----------------------------- */
-
 export default function SectionRenderer({
   sections,
 }: {
   sections: Section[];
 }) {
+  if (!sections?.length) return null;
+
+  const first = sections[0];
+
   return (
     <>
-      {sections?.map((section, i) => {
-        switch (section.__typename) {
-          case "HomepageHero":
-            return <HomeHeroSection key={i} data={section} />;
+      {/* Sticky hero only if first section is HomepageHero */}
+      {first.__typename === "HomepageHero" && (
+        <div className="relative">
+          <div className="sticky top-0 h-screen z-0">
+            <HomeHeroSection data={first} />
+          </div>
 
-          case "HeroSection":
-            return <HeroSection key={i} data={section} />;
+          {/* remaining sections */}
+          <div className="relative z-10 pt-1 bg-white">
+            {sections.slice(1).map((section, i) => {
+              switch (section.__typename) {
+                case "HeroSection":
+                  return <HeroSection key={i} data={section} />;
 
-          case "SectionIntro":
-            return <SectionIntroSection key={i} data={section} />;
+                case "SectionIntro":
+                  return <SectionIntroSection key={i} data={section} />;
 
-          case "LifestyleBanner":
-            return <LifestyleBannerSection key={i} data={section} />;
+                case "LifestyleBanner":
+                  return <LifestyleBannerSection key={i} data={section} />;
 
-          case "FeaturedCategoriesSection":
-            return <FeaturedCategoriesSection key={i} data={section} />;
+                case "FeaturedCategoriesSection":
+                  return <FeaturedCategoriesSection key={i} data={section} />;
 
-          case "TextSection":
-            return <TextSection key={i} data={section} />;
+                case "TextSection":
+                  return <TextSection key={i} data={section} />;
 
-          case "CtaSection":
-            return <CTASection key={i} data={section} />;
+                case "CtaSection":
+                  return <CTASection key={i} data={section} />;
 
-          case "ShopifyCollectionSection":
-            return (
-              <ShopifyCollectionSection
-                key={i}
-                data={section}
-              />
-            );
+                case "ShopifyCollectionSection":
+                  return <ShopifyCollectionSection key={i} data={section} />;
 
-          case "TrustStripSection":
-            return <TrustStrip key={i} data={section} />;
+                case "TrustStripSection":
+                  return <TrustStrip key={i} data={section} />;
 
-          default:
-            return null;
-        }
-      })}
+                case "HomepageHero":
+                  // prevent duplicate rendering if another hero exists
+                  return null;
+
+                default:
+                  return null;
+              }
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Fallback: no hero-first layout */}
+      {first.__typename !== "HomepageHero" &&
+        sections.map((section, i) => {
+          switch (section.__typename) {
+            case "HomepageHero":
+              return <HomeHeroSection key={i} data={section} />;
+
+            case "HeroSection":
+              return <HeroSection key={i} data={section} />;
+
+            case "SectionIntro":
+              return <SectionIntroSection key={i} data={section} />;
+
+            case "LifestyleBanner":
+              return <LifestyleBannerSection key={i} data={section} />;
+
+            case "FeaturedCategoriesSection":
+              return <FeaturedCategoriesSection key={i} data={section} />;
+
+            case "TextSection":
+              return <TextSection key={i} data={section} />;
+
+            case "CtaSection":
+              return <CTASection key={i} data={section} />;
+
+            case "ShopifyCollectionSection":
+              return <ShopifyCollectionSection key={i} data={section} />;
+
+            case "TrustStripSection":
+              return <TrustStrip key={i} data={section} />;
+
+            default:
+              return null;
+          }
+        })}
     </>
   );
 }

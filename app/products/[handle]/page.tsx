@@ -65,20 +65,17 @@ export default async function ProductPage({
   const price = variant?.price?.amount || "0.00";
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-7xl px-4 py-10">
       
-      {/* ===================== */}
-      {/* CORE PDP (SHOPIFY) */}
-      {/* ===================== */}
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.6fr_1fr]">
         
         {/* LEFT */}
-        <div className="md:sticky md:top-24 md:self-start">
+        <div>
           <ProductMediaGallery media={media} />
         </div>
 
         {/* RIGHT */}
-        <div className="flex flex-col gap-6">
+        <div className="md:sticky md:top-24 md:self-start flex flex-col gap-6">
 
           <h1 className="text-2xl font-black uppercase md:text-4xl">
             {product.title}

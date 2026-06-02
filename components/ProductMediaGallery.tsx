@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
 import Image from "next/image";
+import { useState, useRef } from "react";
 
 type MediaNode =
   | {
@@ -45,7 +45,6 @@ export default function ProductMediaGallery({
   media?: { edges?: MediaEdge[] };
 }) {
   const items = media?.edges ?? [];
-
   const [active, setActive] = useState(0);
 
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -60,11 +59,6 @@ export default function ProductMediaGallery({
     setActive(i);
   };
 
-  const changeSlide = (i: number) => {
-    setActive(i);
-  };
-
-  // ================= DRAG =================
   const onPointerDown = (e: React.PointerEvent) => {
     isDragging.current = true;
 
@@ -83,8 +77,9 @@ export default function ProductMediaGallery({
 
     if (trackRef.current) {
       trackRef.current.style.transition = "none";
-      trackRef.current.style.transform =
-        `translateX(calc(${-active * 100}% + ${diff}px))`;
+      trackRef.current.style.transform = `translateX(calc(${
+        -active * 100
+      }% + ${diff}px))`;
     }
   };
 
@@ -103,6 +98,14 @@ export default function ProductMediaGallery({
     else goTo(active);
   };
 
+  if (!items.length) {
+    return (
+      <div className="aspect-square flex items-center justify-center border bg-gray-100">
+        No media
+      </div>
+    );
+  }
+
   const renderMedia = (item: MediaNode) => {
     switch (item.__typename) {
       case "MediaImage":
@@ -110,8 +113,8 @@ export default function ProductMediaGallery({
           <Image
             src={item.image?.url || ""}
             alt={item.image?.altText || ""}
-            width={900}
-            height={900}
+            width={1200}
+            height={1200}
             draggable={false}
             className="h-full w-full object-cover"
           />
@@ -145,91 +148,70 @@ export default function ProductMediaGallery({
   const isVideoSlide = (index: number) =>
     items[index]?.node.__typename !== "MediaImage";
 
-  if (!items.length) {
-    return (
-      <div className="aspect-square flex items-center justify-center border bg-gray-100">
-        No media
-      </div>
-    );
-  }
-
   return (
-    <div className="pt-2 mb-2">
+    <div className="space-y-4">
 
-      {/* ================= MAIN ================= */}
-      <div
-        className="relative aspect-square overflow-hidden rounded-2xl border border-gray-200 bg-white select-none shadow-md"
-        style={{ touchAction: "pan-y" }}
-      >
-        {/* TRACK */}
-        <div
-          ref={trackRef}
-          className="flex h-full w-full transition-transform duration-300"
-          style={{
-            transform: `translateX(-${active * 100}%)`,
-          }}
-        >
-          {items.map((item, i) => (
-            <div key={i} className="min-w-full h-full flex-shrink-0">
-              {renderMedia(item.node)}
-            </div>
-          ))}
-        </div>
-
-        {/* DRAG LAYER (ONLY FOR IMAGES) */}
-        {!isVideoSlide(active) && (
-          <div
-            className="absolute inset-0 z-10"
-            style={{ touchAction: "none" }}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={onPointerUp}
-            onPointerCancel={onPointerUp}
-          />
-        )}
-
-        {/* NAV ARROWS */}
-        <button
-          onClick={() => goTo(active - 1)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 text-white w-10 h-10 rounded-full cursor-pointer transition-all duration-300 hover:bg-black hover:text-white hover:scale-110"
-        >
-          ‹
-        </button>
-
-        <button
-          onClick={() => goTo(active + 1)}
-          className="absolute right-2 top-1/2 -translate-y-1/2  z-20 bg-black/60 text-white w-10 h-10 rounded-full cursor-pointer transition-all duration-300 hover:bg-black hover:text-white hover:scale-110"
-        >
-          ›
-        </button>
-      </div>
-
-      {/* ================= THUMBNAILS ================= */}
-      <div className="flex gap-2 overflow-x-auto p-2">
+      {/* ================= DESKTOP GRID ================= */}
+      <div className="hidden md:grid grid-cols-2 gap-4">
         {items.map((item, i) => (
-          <button
+          <div
             key={i}
-            onClick={() => changeSlide(i)}
-            className={`cursor-pointer h-20 w-20 flex-shrink-0 rounded-lg border overflow-hidden transition hover:shadow-sm hover:scale-[1.02] ${
-              i === active ? "border-black" : "border-gray-200"
-            }`}
+            className="aspect-[4/5] overflow-hidden rounded-xl border border-gray-200"
           >
-            {item.node.__typename === "MediaImage" ? (
-              <Image
-                src={item.node.image?.url || ""}
-                alt=""
-                width={100}
-                height={100}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-black text-white">
-                ▶
-              </div>
-            )}
-          </button>
+            {renderMedia(item.node)}
+          </div>
         ))}
       </div>
+
+      {/* ================= MOBILE CAROUSEL ================= */}
+      <div className="md:hidden">
+        <div
+          className="relative aspect-square overflow-hidden rounded-xl border border-gray-200 bg-white select-none"
+          style={{ touchAction: "pan-y" }}
+        >
+          <div
+            ref={trackRef}
+            className="flex h-full w-full transition-transform duration-300"
+            style={{
+              transform: `translateX(-${active * 100}%)`,
+            }}
+          >
+            {items.map((item, i) => (
+              <div key={i} className="min-w-full h-full flex-shrink-0">
+                {renderMedia(item.node)}
+              </div>
+            ))}
+          </div>
+
+          {!isVideoSlide(active) && (
+            <div
+              className="absolute inset-0 z-10"
+              style={{ touchAction: "none" }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerCancel={onPointerUp}
+            />
+          )}
+
+          <button
+            onClick={() => goTo(active - 1)}
+            className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white"
+            aria-label="Previous slide"
+          >
+            ‹
+          </button>
+
+          <button
+            onClick={() => goTo(active + 1)}
+            className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white"
+            aria-label="Next slide"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }
