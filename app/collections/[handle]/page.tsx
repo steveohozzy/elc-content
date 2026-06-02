@@ -3,6 +3,26 @@ import { contentfulFetch } from "@/lib/contentful";
 import { GET_COLLECTION_PRODUCTS, GET_PRODUCTS, GET_SECTION } from "@/lib/queries";
 import CollectionClient from "@/components/CollectionClient";
 
+import type { Metadata } from "next";
+import { getCollectionPage } from "@/lib/getCollectionPage";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params;
+
+  const { collection, section } = await getCollectionPage(handle);
+
+  return {
+    title: section?.title || collection?.title || "Collection",
+    description:
+      section?.blurb ||
+      "Premium snowboard gear and performance apparel built for riders.",
+  };
+}
+
 type ProductEdge = {
   node: {
     id: string;
