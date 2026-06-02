@@ -222,6 +222,7 @@ export default function SearchClient({
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/20"
+              id="max-price"
             />
           </div>
 
@@ -283,6 +284,7 @@ export default function SearchClient({
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="mt-2 w-full"
+              id="max-price"
             />
           </div>
         </div>

@@ -210,6 +210,7 @@ const pageInfo =
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="h-1 w-full rounded-full bg-white/20"
+              id="max-price"
             />
           </div>
 
@@ -271,6 +272,7 @@ const pageInfo =
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="mt-2 w-full"
+              id="max-price"
             />
           </div>
         </div>
