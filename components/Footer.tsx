@@ -45,7 +45,7 @@ export default async function Footer() {
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
             {footer?.menu1LinksCollection?.items?.map(
               (link: { label: string; url: string }) => (
-                <li key={link.url}>
+                <li key={link.label}>
                   <Link
                     href={link.url}
                     className="hover:text-black transition"
@@ -67,7 +67,7 @@ export default async function Footer() {
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
             {footer?.menu2LinksCollection?.items?.map(
               (link: { label: string; url: string }) => (
-                <li key={link.url}>
+                <li key={link.label}>
                   <Link
                     href={link.url}
                     className="hover:text-black transition"
@@ -89,7 +89,7 @@ export default async function Footer() {
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
             {footer?.menu3LinksCollection?.items?.map(
               (link: { label: string; url: string }) => (
-                <li key={link.url}>
+                <li key={link.label}>
                   <Link
                     href={link.url}
                     className="hover:text-black transition"
