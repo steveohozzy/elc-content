@@ -297,7 +297,7 @@ const pageInfo =
                 height={600}
                 alt={node.title}
                 className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-110 group-hover:opacity-0"
-                priority={index < 4}
+                priority={index === 0}
                 sizes="(max-width: 768px) 50vw, 25vw"
               />
 
