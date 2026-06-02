@@ -312,6 +312,7 @@ export default function SearchClient({
                   transition duration-500
                   group-hover:scale-110 group-hover:opacity-0
                 "
+                priority
               />
 
               {node.images.edges[1]?.node.url && (
@@ -325,6 +326,7 @@ export default function SearchClient({
                     opacity-0 transition duration-500
                     group-hover:scale-110 group-hover:opacity-100
                   "
+                  priority
                 />
               )}
             </div>

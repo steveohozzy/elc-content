@@ -297,6 +297,7 @@ const pageInfo =
                 height={600}
                 alt={node.title}
                 className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-110 group-hover:opacity-0"
+                priority
               />
 
               {node.images.edges[1]?.node.url && (
@@ -306,6 +307,7 @@ const pageInfo =
                   height={600}
                   alt={node.title}
                   className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-500 group-hover:scale-110 group-hover:opacity-100"
+                  priority
                 />
               )}
             </div>
