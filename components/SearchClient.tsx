@@ -294,7 +294,7 @@ export default function SearchClient({
 
       {/* ================= GRID ================= */}
       <div className="grid grid-cols-2 gap-4 pb-14 md:grid-cols-4 md:gap-6">
-        {filtered.map((node) => (
+        {filtered.map((node, index) => (
           <Link
             key={node.id}
             href={`/products/${node.handle}`}
@@ -312,7 +312,8 @@ export default function SearchClient({
                   transition duration-500
                   group-hover:scale-110 group-hover:opacity-0
                 "
-                priority
+                priority={index === 0}
+                loading={index === 0 ? undefined : "lazy"}
               />
 
               {node.images.edges[1]?.node.url && (
@@ -326,7 +327,8 @@ export default function SearchClient({
                     opacity-0 transition duration-500
                     group-hover:scale-110 group-hover:opacity-100
                   "
-                  priority
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : "lazy"}
                 />
               )}
             </div>
