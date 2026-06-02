@@ -330,9 +330,9 @@ export default function SearchClient({
             </div>
 
             <div className="p-4">
-              <h3 className="line-clamp-2 text-sm font-medium md:text-base">
+              <div className="line-clamp-2 text-sm font-medium md:text-base">
                 {node.title}
-              </h3>
+              </div>
 
               <p className="mt-2 text-lg font-bold">
                 {node.priceRange?.minVariantPrice?.currencyCode}{" "}
