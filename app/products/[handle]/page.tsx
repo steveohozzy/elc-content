@@ -67,7 +67,7 @@ export default async function ProductPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.6fr_1fr]">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.7fr_1fr]">
         
         {/* LEFT */}
         <div>

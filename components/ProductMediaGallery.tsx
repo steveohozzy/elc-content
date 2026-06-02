@@ -152,11 +152,11 @@ export default function ProductMediaGallery({
     <div className="space-y-4">
 
       {/* ================= DESKTOP GRID ================= */}
-      <div className="hidden md:grid grid-cols-2 gap-4">
+      <div className="hidden md:grid grid-cols-2">
         {items.map((item, i) => (
           <div
             key={i}
-            className="aspect-[4/5] overflow-hidden rounded-xl border border-gray-200"
+            className="aspect-[4/5] overflow-hidden "
           >
             {renderMedia(item.node)}
           </div>
