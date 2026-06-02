@@ -7,6 +7,27 @@ import {
   GET_SECTION,
 } from "@/lib/queries";
 
+type ProductEdge = {
+  node: {
+    id: string;
+    title: string;
+    handle: string;
+    images?: {
+      edges: {
+        node: {
+          url: string;
+        };
+      }[];
+    };
+    priceRange?: {
+      minVariantPrice: {
+        amount: string;
+        currencyCode: string;
+      };
+    };
+  };
+};
+
 export const getCollectionPage = cache(async (handle: string) => {
   const isAllProducts = handle === "all";
   const isNewArrivals = handle === "new-arrivals";
@@ -43,7 +64,7 @@ export const getCollectionPage = cache(async (handle: string) => {
   const source = collectionProducts ?? rootProducts;
 
   const products =
-    source?.edges?.map((edge: any) => edge.node) ?? [];
+  source?.edges?.map((edge: ProductEdge) => edge.node) ?? [];
 
   const pageInfo = source?.pageInfo;
 
