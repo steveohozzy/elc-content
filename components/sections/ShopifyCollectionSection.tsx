@@ -1,6 +1,5 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { GET_COLLECTION_PRODUCTS } from "@/lib/queries";
-import Image from "next/image";
 import FeaturedProductsCarousel from "../FeaturedCarousel";
 
 type Props = {
@@ -8,23 +7,6 @@ type Props = {
     collectionId: string;
     title?: string;
     limit?: number;
-  };
-};
-
-type ProductEdge = {
-  node: {
-    id: string;
-    title: string;
-    handle: string;
-    images: {
-      edges: { node: { url: string } }[];
-    };
-    priceRange: {
-      minVariantPrice: {
-        amount: string;
-        currencyCode: string;
-      };
-    };
   };
 };
 
