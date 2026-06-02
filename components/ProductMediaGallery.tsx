@@ -46,6 +46,8 @@ export default function ProductMediaGallery({
 }) {
   const items = media?.edges ?? [];
   const [active, setActive] = useState(0);
+  const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 
   const trackRef = useRef<HTMLDivElement | null>(null);
 
@@ -153,14 +155,49 @@ export default function ProductMediaGallery({
 
       {/* ================= DESKTOP GRID ================= */}
       <div className="hidden md:grid grid-cols-2">
-        {items.map((item, i) => (
-          <div
-            key={i}
-            className="aspect-[4/5] overflow-hidden "
-          >
-            {renderMedia(item.node)}
-          </div>
-        ))}
+        {items.map((item, i) => {
+          const isImage = item.node.__typename === "MediaImage";
+
+          return (
+            <div
+              key={i}
+              className="aspect-[4/5] overflow-hidden relative cursor-zoom-in"
+              onMouseMove={(e) => {
+                if (!isImage) return;
+
+                const rect = e.currentTarget.getBoundingClientRect();
+
+                setZoomPos({
+                  x: ((e.clientX - rect.left) / rect.width) * 100,
+                  y: ((e.clientY - rect.top) / rect.height) * 100,
+                });
+              }}
+              onMouseEnter={() => {
+                if (isImage) setZoomedIndex(i);
+              }}
+              onMouseLeave={() => {
+                setZoomedIndex(null);
+              }}
+            >
+              {isImage ? (
+                <div
+                  className="h-full w-full transition-transform duration-200"
+                  style={{
+                    transform:
+                      zoomedIndex === i
+                        ? "scale(2)"
+                        : "scale(1)",
+                    transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                  }}
+                >
+                  {renderMedia(item.node)}
+                </div>
+              ) : (
+                renderMedia(item.node)
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* ================= MOBILE CAROUSEL ================= */}
