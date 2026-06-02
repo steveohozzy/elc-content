@@ -8,7 +8,7 @@ export default async function Footer() {
   const footer =
     footerData?.data?.footerCollection?.items?.[0];
   return (
-    <footer className="mt-16 border-t border-black/10 bg-white">
+    <footer className="mt-16 border-t border-black/10 bg-black/3">
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-14 md:grid-cols-4">
         <div>
