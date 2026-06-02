@@ -178,6 +178,7 @@ export default function ProductMediaGallery({
           const node = item.node;
 
           const isImage = node.__typename === "MediaImage";
+          
 
           const src =
             node.__typename === "MediaImage"
@@ -212,14 +213,13 @@ export default function ProductMediaGallery({
                 <div
                   className="h-full w-full transition-transform duration-200"
                   style={{
-                    transform:
-                      zoomedIndex === i ? "scale(2)" : "scale(1)",
+                    transform: zoomedIndex === i ? "scale(2)" : "scale(1)",
                     transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
                   }}
                 >
                   <Image
                     src={zoomedIndex === i ? zoomSrc : gridSrc}
-                    alt={item.node.image?.altText || ""}
+                    alt={node.image?.altText || ""}
                     width={1600}
                     height={2000}
                     sizes="(min-width: 768px) 50vw, 100vw"
@@ -227,7 +227,7 @@ export default function ProductMediaGallery({
                   />
                 </div>
               ) : (
-                renderMedia(item.node)
+                renderMedia(node)
               )}
             </div>
           );
