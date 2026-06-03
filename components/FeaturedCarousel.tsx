@@ -208,6 +208,9 @@ export default function FeaturedProductsCarousel({
                   group-hover:scale-110
                   group-hover:opacity-0
                 "
+                sizes="(max-width: 768px) 50vw, 25vw"
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : "lazy"}
               />
 
               {node.images.edges[1]?.node.url && (
