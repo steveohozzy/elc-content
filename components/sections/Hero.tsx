@@ -31,6 +31,7 @@ export default function HeroSection({
           priority
           sizes="100vw"
           className="object-cover opacity-50"
+          quality={75}
         />
       </div>
 

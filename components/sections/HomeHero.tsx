@@ -40,6 +40,7 @@ export default function HomeHeroSection({
             height={1080}
             priority
             className="h-full w-full object-cover opacity-60"
+            quality={75}
           />
         </div>
 
