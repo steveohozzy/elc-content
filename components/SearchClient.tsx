@@ -304,16 +304,18 @@ export default function SearchClient({
 
               <Image
                 src={node.images.edges[0]?.node.url}
-                width={600}
-                height={600}
                 alt={node.title}
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
                 className="
-                  absolute inset-0 h-full w-full object-cover
+                  absolute inset-0
+                  h-full w-full
+                  object-cover
                   transition duration-500
-                  group-hover:scale-110 group-hover:opacity-0
+                  group-hover:scale-110
+                  group-hover:opacity-0
                 "
                 priority={index === 0}
-                loading={index === 0 ? undefined : "lazy"}
               />
 
               {node.images.edges[1]?.node.url && (
@@ -327,8 +329,6 @@ export default function SearchClient({
                     opacity-0 transition duration-500
                     group-hover:scale-110 group-hover:opacity-100
                   "
-                  priority={index === 0}
-                  loading={index === 0 ? undefined : "lazy"}
                 />
               )}
             </div>
