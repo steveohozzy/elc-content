@@ -123,7 +123,7 @@ export default function ProductMediaGallery({
     );
   }
 
-  const renderMedia = (item: MediaNode, i?: number) => {
+  const renderMedia = (item: MediaNode) => {
     switch (item.__typename) {
       case "MediaImage": {
         const src = item.image?.url || "";
@@ -251,7 +251,7 @@ export default function ProductMediaGallery({
           >
             {items.map((item, i) => (
               <div key={i} className="min-w-full h-full flex-shrink-0">
-                {renderMedia(item.node, i)}
+                {renderMedia(item.node)}
               </div>
             ))}
           </div>
