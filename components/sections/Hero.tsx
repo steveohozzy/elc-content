@@ -27,10 +27,10 @@ export default function HeroSection({
             "https://images.unsplash.com/photo-1590461283969-47fedf408cfd?fm=jpg&q=60&w=3000&auto=format&fit=crop"
           }
           alt={data.headline || "Hero image"}
-          width={1920}
-          height={1080}
+          fill
           priority
-          className="h-full w-full object-cover opacity-50"
+          sizes="100vw"
+          className="object-cover opacity-50"
         />
       </div>
 

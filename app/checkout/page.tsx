@@ -180,6 +180,7 @@ export default function CheckoutPage() {
                     height={80}
                     alt={node.merchandise.product.title}
                     className="h-full w-full object-cover"
+                    priority
                   />
                 </div>
 

@@ -135,6 +135,7 @@ export default function CartPage() {
                 height={150}
                 alt={node.merchandise.product.title}
                 className="h-full w-full object-cover"
+                priority
               />
             </Link>
 
