@@ -292,26 +292,29 @@ export default function ProductMediaGallery({
               onPointerCancel={onPointerUp}
             />
           )}
+          {items.length > 1 && (
+            <>
+          <div
+            className="absolute left-0 top-0 z-[9998] h-full w-20"
+            onClick={() => goTo(active - 1)}
+          />
 
           <div
-  className="absolute left-0 top-0 z-[9998] h-full w-20"
-  onClick={() => goTo(active - 1)}
-/>
+            className="absolute right-0 top-0 z-[9998] h-full w-40"
+            onClick={() => goTo(active + 1)}
+          />
 
-<div
-  className="absolute right-0 top-0 z-[9998] h-full w-20"
-  onClick={() => goTo(active + 1)}
-/>
+          <div className="pointer-events-none absolute inset-0 z-[9999]">
+            <div className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-2xl font-bold text-white shadow-lg">
+              ‹
+            </div>
 
-<div className="pointer-events-none absolute inset-0 z-[9999]">
-  <div className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-2xl font-bold text-white shadow-lg">
-    ‹
-  </div>
-
-  <div className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-2xl font-bold text-white shadow-lg">
-    ›
-  </div>
-</div>
+            <div className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-2xl font-bold text-white shadow-lg">
+              ›
+            </div>
+          </div>
+          </>
+          )}
         </div>
       </div>
 
