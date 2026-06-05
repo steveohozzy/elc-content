@@ -58,16 +58,9 @@ export default function HomeHeroSection({
           {/* TITLE */}
           <h1 className="max-w-6xl text-5xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
             {data?.title || "Ride Beyond"}
-            {data?.titleAccent ? 
-              <span className="block text-white/60">
-                {data?.titleAccent}
-              </span>  
-              :       
-              <span className="block text-white/60">
-                
-                The Limits
-              </span>
-            }
+            <span className="block text-white/60">
+              {data?.titleAccent || "The Limits"}
+            </span>  
           </h1>
 
           {/* SUBTITLE */}
