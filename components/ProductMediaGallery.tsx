@@ -300,7 +300,7 @@ export default function ProductMediaGallery({
           />
 
           <div
-            className="absolute right-0 top-0 z-[9998] h-full w-40"
+            className="absolute right-0 top-0 z-[9998] h-full w-30"
             onClick={() => goTo(active + 1)}
           />
 
