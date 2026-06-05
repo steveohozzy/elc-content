@@ -63,6 +63,7 @@ export default function ProductMediaGallery({
   const [active, setActive] = useState(0);
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+  const [playingVideo, setPlayingVideo] = useState<number | null>(null);
 
   const trackRef = useRef<HTMLDivElement | null>(null);
 
@@ -71,8 +72,11 @@ export default function ProductMediaGallery({
   const isDragging = useRef(false);
 
   const goTo = (i: number) => {
+    setPlayingVideo(null);
+
     if (i < 0) return setActive(items.length - 1);
     if (i >= items.length) return setActive(0);
+
     setActive(i);
   };
 
@@ -152,15 +156,37 @@ export default function ProductMediaGallery({
           </video>
         );
 
-      case "ExternalVideo":
+      case "ExternalVideo": {
+        const isPlaying = playingVideo === active;
+
         return (
-          <iframe
-            src={cleanYoutubeUrl(item.embeddedUrl)}
-            className="h-full w-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+          <div className="relative h-full w-full">
+            <iframe
+              src={
+                isPlaying
+                  ? `${cleanYoutubeUrl(item.embeddedUrl)}?autoplay=1`
+                  : cleanYoutubeUrl(item.embeddedUrl)
+              }
+              className={`h-full w-full ${
+                isPlaying ? "pointer-events-auto" : "pointer-events-none"
+              }`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+
+            {!isPlaying && (
+              <div
+                className="absolute inset-0 z-50 flex items-center justify-center bg-black/20"
+                onClick={() => setPlayingVideo(active)}
+              >
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-3xl shadow-lg">
+                  ▶
+                </div>
+              </div>
+            )}
+          </div>
         );
+      }
 
       default:
         return null;
@@ -267,21 +293,25 @@ export default function ProductMediaGallery({
             />
           )}
 
-          <button
-            onClick={() => goTo(active - 1)}
-            className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white"
-            aria-label="Previous slide"
-          >
-            ‹
-          </button>
+          <div
+  className="absolute left-0 top-0 z-[9998] h-full w-20"
+  onClick={() => goTo(active - 1)}
+/>
 
-          <button
-            onClick={() => goTo(active + 1)}
-            className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white"
-            aria-label="Next slide"
-          >
-            ›
-          </button>
+<div
+  className="absolute right-0 top-0 z-[9998] h-full w-20"
+  onClick={() => goTo(active + 1)}
+/>
+
+<div className="pointer-events-none absolute inset-0 z-[9999]">
+  <div className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-2xl font-bold text-white shadow-lg">
+    ‹
+  </div>
+
+  <div className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-2xl font-bold text-white shadow-lg">
+    ›
+  </div>
+</div>
         </div>
       </div>
 
