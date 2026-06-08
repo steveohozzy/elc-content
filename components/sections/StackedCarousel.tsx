@@ -53,7 +53,6 @@ export default function StackedCarousel({ data }: Props) {
     let isDragging = false;
     let startX = 0;
     let dragOffset = 0;
-    let multiplier = window.innerWidth < 1024 ? 14 : 18;
 
     const setHeights = () => {
       let max = 0;
@@ -69,28 +68,31 @@ export default function StackedCarousel({ data }: Props) {
     };
 
     const update = (index = currentIndex) => {
-      const len = cards.length;
+    const len = cards.length;
 
-      cards.forEach((card, i) => {
-        const offset = (i - index + len) % len;
-        const isTop = offset === 0;
+    const stackWidth = stack.clientWidth;
+    const cardWidth = cards[0]?.offsetWidth || 0;
 
-        const x = offset * multiplier + (isTop ? dragOffset / 4 : 0);
+    const available = stackWidth - cardWidth;
 
-        card.style.transform = `
-          translateX(${x}%)
-          scale(${1 - offset * 0.04})
-        `;
+    const step = len > 1 ? available / (len - 1) : 0;
 
-        card.style.zIndex = String(len - offset);
+    cards.forEach((card, i) => {
+      const offset = (i - index + len) % len;
+      const isTop = offset === 0;
 
-        if (isTop) {
-          card.classList.add("top");
-        } else {
-          card.classList.remove("top");
-        }
-      });
-    };
+      const x = offset * step + (isTop ? dragOffset : 0);
+
+      card.style.transform = `
+        translateX(${x}px)
+        scale(${1 - offset * 0.04})
+      `;
+
+      card.style.zIndex = String(len - offset);
+
+      card.classList.toggle("top", isTop);
+    });
+  };
 
     const next = () => {
       dragOffset = 0;
@@ -136,7 +138,6 @@ export default function StackedCarousel({ data }: Props) {
     window.addEventListener("mouseup", onUp);
 
     const resize = () => {
-      multiplier = window.innerWidth < 1024 ? 14 : 18;
 
       setTimeout(() => {
         setHeights();
@@ -159,6 +160,11 @@ export default function StackedCarousel({ data }: Props) {
     };
   }, [currentIndex, panels.length]);
 
+  const cardWidth = Math.min(
+    75,
+    Math.max(30, 100 - (panels.length - 1) * 12)
+  );
+
   return (
     <div className="relative mx-auto w-full">
       <div className="flex justify-center px-5">
@@ -171,13 +177,15 @@ export default function StackedCarousel({ data }: Props) {
               key={i}
               className="
                 carousel-card
-                absolute left-0
-                w-[45%]
-                md:w-[37%]
-                transition-transform duration-500 ease-out
+                absolute
+                left-0
+                transition-transform
+                duration-500
+                ease-out
                 select-none
                 cursor-pointer
               "
+              style={{ width: `${cardWidth}%` }}
               onClick={() => setCurrentIndex(i)}
             >
               <div className="card-inner w-full">
