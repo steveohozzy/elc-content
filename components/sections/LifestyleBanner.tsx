@@ -33,6 +33,7 @@ export default function LifestyleBannerSection({
           alt={data?.backgroundImage?.title || "Hero image"}
           width={1920}
           height={1080}
+          sizes="(min-width: 1280px) 1280px, 100vw"
           className="h-[300px] w-full object-cover opacity-60 md:h-[420px]"
         />
 
