@@ -211,6 +211,7 @@ export default function StackedCarousel({ data }: Props) {
                       alt=""
                       width={600}
                       height={600}
+                      sizes="(max-width: 768px) 50vw, 25vw"
                     />
 
                     <Image
@@ -231,6 +232,7 @@ export default function StackedCarousel({ data }: Props) {
                       alt={panel.title}
                       width={400}
                       height={400}
+                      sizes="(max-width: 768px) 50vw, 25vw"
                     />
                   </div>
 

@@ -227,6 +227,9 @@ export default function FeaturedProductsCarousel({
                     group-hover:scale-110
                     group-hover:opacity-100
                   "
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : "lazy"}
                 />
               )}
             </div>
