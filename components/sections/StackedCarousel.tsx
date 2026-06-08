@@ -260,7 +260,7 @@ export default function StackedCarousel({ data }: Props) {
                       href={panel.link}
                       onClick={(e) => e.stopPropagation()}
                       className="
-                        bg-green-600
+                        bg-black-800
                         text-white
                         font-bold
                         px-6
