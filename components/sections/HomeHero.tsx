@@ -29,20 +29,21 @@ export default function HomeHeroSection({
 
         {/* BACKGROUND IMAGE */}
         <div className="absolute inset-0">
-          <Image
-            src={
+        <Image
+          fill
+          priority
+          fetchPriority="high"
+          sizes="(min-width: 1280px) 1280px, 100vw"
+          src={
               data?.backgroundImage?.url
                 ? `${data?.backgroundImage.url}`
                 : "https://images.unsplash.com/photo-1590461283969-47fedf408cfd?fm=jpg&q=60&w=3000&auto=format&fit=crop"
             }
             alt={data?.backgroundImage?.title || "Hero image"}
-            width={1920}
-            height={1080}
-            priority
-            className="h-full w-full object-cover opacity-60"
-            quality={75}
-          />
-        </div>
+          className="object-cover opacity-60"
+          quality={75}
+        />
+      </div>
 
         {/* OVERLAY */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/60 to-black" />
