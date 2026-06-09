@@ -30,6 +30,8 @@ export default function StackedCarousel({ data }: Props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const draggedRef = useRef(false);
+
   const panels: ValidPanel[] = (data.panelsCollection?.items ?? []).filter(
     (p): p is ValidPanel =>
       !!p?.image?.url &&
@@ -80,6 +82,7 @@ export default function StackedCarousel({ data }: Props) {
     cards.forEach((card, i) => {
       const offset = (i - index + len) % len;
       const isTop = offset === 0;
+      card.dataset.top = String(isTop);
 
       const x = offset * step + (isTop ? dragOffset : 0);
 
@@ -104,28 +107,35 @@ export default function StackedCarousel({ data }: Props) {
       setCurrentIndex((prev) => (prev - 1 + cards.length) % cards.length);
     };
 
-    const onDown = (e: MouseEvent) => {
+    const onDown = (e: PointerEvent) => {
       isDragging = true;
+      draggedRef.current = false;
       startX = e.clientX;
     };
 
-    const onMove = (e: MouseEvent) => {
+    const onMove = (e: PointerEvent) => {
       if (!isDragging) return;
 
-      dragOffset = Math.max(-25, Math.min(25, e.clientX - startX));
+      const delta = e.clientX - startX;
+
+      if (Math.abs(delta) > 5) {
+        draggedRef.current = true;
+      }
+
+      dragOffset = Math.max(-60, Math.min(60, delta));
       update();
     };
 
-    const onUp = (e: MouseEvent) => {
+    const onUp = (e: PointerEvent) => {
       if (!isDragging) return;
 
       isDragging = false;
 
       const delta = e.clientX - startX;
 
-      if (delta > 25) {
+      if (delta > 15) {
         prev();
-      } else if (delta < -25) {
+      } else if (delta < -15) {
         next();
       } else {
         dragOffset = 0;
@@ -133,9 +143,9 @@ export default function StackedCarousel({ data }: Props) {
       }
     };
 
-    stack.addEventListener("mousedown", onDown);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
+    stack.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
 
     const resize = () => {
 
@@ -152,31 +162,36 @@ export default function StackedCarousel({ data }: Props) {
       update();
     }, 120);
 
-    return () => {
-      stack.removeEventListener("mousedown", onDown);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      window.removeEventListener("resize", resize);
-    };
+   return () => {
+    stack.removeEventListener("pointerdown", onDown);
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("resize", resize);
+  };
   }, [currentIndex, panels.length]);
 
-  const cardWidth = Math.min(
-    75,
-    Math.max(30, 100 - (panels.length - 1) * 12)
-  );
+  const cardWidth =
+    panels.length <= 3
+      ? 45
+      : panels.length === 4
+      ? 42
+      : panels.length === 5
+      ? 40
+      : 38;
 
   return (
-    <div className="relative mx-auto w-full">
+    <div className="relative mx-auto w-full max-w-7xl pb-8 overflow-hidden">
       <div className="flex justify-center px-5">
         <div
           ref={stackRef}
-          className="relative w-full overflow-visible cursor-grab active:cursor-grabbing"
+          className="relative w-full overflow-visible cursor-grab active:cursor-grabbing touch-pan-y"
         >
           {panels.map((panel, i) => (
             <div
               key={i}
               className="
                 carousel-card
+                select-none
                 absolute
                 left-0
                 transition-transform
@@ -186,7 +201,14 @@ export default function StackedCarousel({ data }: Props) {
                 cursor-pointer
               "
               style={{ width: `${cardWidth}%` }}
-              onClick={() => setCurrentIndex(i)}
+              onClick={() => {
+                if (draggedRef.current) {
+                  draggedRef.current = false;
+                  return;
+                }
+
+                setCurrentIndex(i);
+              }}
             >
               <div className="card-inner w-full">
                 <div
@@ -212,6 +234,7 @@ export default function StackedCarousel({ data }: Props) {
                       width={600}
                       height={600}
                       sizes="(max-width: 768px) 50vw, 25vw"
+                      draggable={false}
                     />
 
                     <Image
@@ -233,6 +256,7 @@ export default function StackedCarousel({ data }: Props) {
                       width={400}
                       height={400}
                       sizes="(max-width: 768px) 50vw, 25vw"
+                      draggable={false}
                     />
                   </div>
 
