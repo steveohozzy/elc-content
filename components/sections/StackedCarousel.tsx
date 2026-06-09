@@ -242,14 +242,17 @@ export default function StackedCarousel({ data }: Props) {
                       className={`
                         absolute
                         bottom-0
+                        right-1/2
                         h-[90%]
                         w-auto
-                        transition-all
+                        transition-transform
                         duration-500
+                        ease-out
+                        will-change-transform
                         ${
                           currentIndex === i
-                            ? "right-1/2 translate-x-1/2"
-                            : "right-[-20px]"
+                            ? "translate-x-1/2"
+                            : "translate-x-[60%]"
                         }
                       `}
                       alt={panel.title}
@@ -289,15 +292,19 @@ export default function StackedCarousel({ data }: Props) {
                         bg-black/80
                         text-white
                         font-bold
-                        px-6
+                        px-2
+                        md:px-6
                         py-2
                         rounded-full
                         shadow-md
                         flex
                         items-center
-                        gap-2
+                        gap-
                         transition-transform
                         hover:scale-105
+                        text-xs
+                        md:text-sm
+                        lg:text-base
                       "
                     >
                       ★ Shop 🛒 ★
