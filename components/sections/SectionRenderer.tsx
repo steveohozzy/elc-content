@@ -9,6 +9,7 @@ import FeaturedCategoriesSection from "./FeaturedCategories";
 import type { Document } from "@contentful/rich-text-types";
 import TrustStrip from "./TrustStrip";
 import StackedCarouselSection from "./StackedCarousel";
+import DeckCarouselSection from "./deckCarousel";
 
 /* ---------------------------
    TYPES
@@ -76,6 +77,23 @@ type FeaturedCategoriesData = {
   };
 };
 
+type DeckCarouselData = {
+  __typename: "DeckCarouselSection";
+  title?: string;
+  panelsCollection?: {
+    items: {
+      title?: string;
+      link?: string;
+      image?: {
+        url?: string;
+      };
+      backgroundImage?: {
+        url?: string;
+      };
+    }[];
+  };
+};
+
 type StackedCarouselData = {
   __typename: "StackedCarouselSection";
   title?: string;
@@ -124,7 +142,7 @@ type TrustStripData = {
   };
 };
 
-type Section = HomepageHeroData | HeroSectionData | TextSectionData | CTASectionData | ShopifyCollectionSectionData | LifestyleBannerData | SectionIntroData | FeaturedCategoriesData | TrustStripData | StackedCarouselData;
+type Section = HomepageHeroData | HeroSectionData | TextSectionData | CTASectionData | ShopifyCollectionSectionData | LifestyleBannerData | SectionIntroData | FeaturedCategoriesData | TrustStripData | StackedCarouselData | DeckCarouselData;
 
 export default function SectionRenderer({
   sections,
@@ -162,6 +180,9 @@ export default function SectionRenderer({
 
                 case "StackedCarouselSection":
                   return <StackedCarouselSection key={i} data={section} />;
+
+                case "DeckCarouselSection":
+                  return <DeckCarouselSection key={i} data={section} />;
 
                 case "TextSection":
                   return <TextSection key={i} data={section} />;
