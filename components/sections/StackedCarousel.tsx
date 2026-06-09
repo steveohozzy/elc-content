@@ -243,16 +243,18 @@ export default function StackedCarousel({ data }: Props) {
                         absolute
                         bottom-0
                         right-1/2
-                        h-[90%]
-                        w-auto
+                        h-auto
+                        w-full
+                        max-w-[80%]
                         transition-transform
                         duration-500
                         ease-out
                         will-change-transform
+                        delay-250
                         ${
                           currentIndex === i
                             ? "translate-x-1/2"
-                            : "translate-x-[60%]"
+                            : "translate-x-[65%]"
                         }
                       `}
                       alt={panel.title}
