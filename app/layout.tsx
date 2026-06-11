@@ -1,39 +1,26 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { shopifyFetch } from "@/lib/shopify";
-import { GET_COLLECTIONS } from "@/lib/queries";
+import { Geist, Fraunces } from 'next/font/google'
 import "./globals.css";
 
-type CollectionNode = {
-  id: string;
-  title: string;
-  handle: string;
-};
-
-type CollectionEdge = {
-  node: CollectionNode;
-};
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
+const fraunces = Fraunces({
+  variable: '--font-fraunces',
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const data = await shopifyFetch(GET_COLLECTIONS);
-
-  const rawCollections =
-  (data?.data?.collections?.edges ?? []) as CollectionEdge[];
-
-  const collections = rawCollections.filter(
-    ({ node }) =>
-      node.handle !== "frontpage" &&
-      node.title.toLowerCase() !== "home"
-  );
+  
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${geistSans.variable} ${fraunces.variable}`}>
       <body>
-        <Header collections={collections} />
+        <Header />
 
         <main>{children}</main>
 

@@ -1,21 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import SearchPreview from "./SearchPreview";
-
-type Collection = {
-  node: {
-    id: string;
-    title: string;
-    handle: string;
-  };
-};
 
 export default function MobileMenu({
-  collections,
-}: {
-  collections: Collection[];
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -92,72 +79,6 @@ export default function MobileMenu({
                   ✕
                 </button>
               )}
-            </div>
-
-            {/* SEARCH */}
-            <div className="mb-8">
-              <SearchPreview
-                onSearch={() => setMobileMenuOpen(false)}
-              />
-            </div>
-
-            {/* NAV */}
-            <nav className="flex flex-col gap-3">
-              {collections.map(({ node }) => (
-                <Link
-                  key={node.id}
-                  href={`/collections/${node.handle}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="
-                    group relative overflow-hidden
-                    rounded-2xl border border-white/5
-                    bg-white/10 px-5 py-4
-                    text-sm font-semibold uppercase
-                    tracking-[0.18em] text-gray-300
-                    transition duration-300
-                    hover:border-white/15 hover:bg-white/[0.06] hover:text-white
-                  "
-                >
-                  <span className="relative z-10">
-                    {node.title}
-                  </span>
-                </Link>
-              ))}
-            </nav>
-
-            {/* CART CTA */}
-            <div className="mt-auto pt-10">
-              <Link
-                href="/cart"
-                onClick={() => setMobileMenuOpen(false)}
-                className="
-                  group flex items-center justify-between
-                  rounded-2xl border border-white/10
-                  bg-gradient-to-br from-white/10 via-white/5 to-transparent
-                  px-5 py-4 backdrop-blur-xl
-                  transition duration-300
-                  hover:border-white/20 hover:bg-white/15
-                "
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/10">
-                    <span className="text-xl">🛒</span>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-semibold text-white">
-                      View Cart
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      Checkout your items
-                    </p>
-                  </div>
-                </div>
-
-                <span className="text-white/60 transition group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
             </div>
 
           </div>

@@ -8,5 +8,7 @@ export const getHomePage = cache(async () => {
     slug: "home",
   });
 
+  console.log(JSON.stringify(data, null, 2));
+
   return data?.data?.pageCollection?.items?.[0] ?? null;
 });

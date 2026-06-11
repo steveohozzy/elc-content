@@ -1,15 +1,9 @@
+import { Blog } from "./Blog";
+import { ExpandingPanels } from "./ExpandingPanels";
 import HomeHeroSection from "./HomeHero";
-import HeroSection from "./Hero";
-import LifestyleBannerSection from "./LifestyleBanner";
-import TextSection from "./Text";
-import CTASection from "./CTA";
-import SectionIntroSection from "./SectionIntro";
-import ShopifyCollectionSection from "./ShopifyCollectionSection";
-import FeaturedCategoriesSection from "./FeaturedCategories";
+import { Marquee } from "./Marquee";
+import { Story } from "./Story";
 import type { Document } from "@contentful/rich-text-types";
-import TrustStrip from "./TrustStrip";
-import StackedCarouselSection from "./StackedCarousel";
-import DeckCarouselSection from "./deckCarousel";
 
 /* ---------------------------
    TYPES
@@ -34,115 +28,77 @@ type HomepageHeroData = {
   ctaSecondaryLink?: string;
 };
 
-type HeroSectionData = {
-  __typename: "HeroSection";
-  headline?: string;
-  subheading?: string;
-  buttonText?: string;
-  buttonLink?: string;
-  image?: { url: string };
-};
-
-type SectionIntroData = {
-  __typename: "SectionIntro";
+type MarqueeData = {
+  __typename: "Marquee";
   title?: string;
-  subtitle?: string;
-  blurb?: string;
-};
-
-type LifestyleBannerData = {
-  __typename: "LifestyleBanner";
-  title?: string;
-  blurb?: string;
-
-  backgroundImage?: {
-    url: string;
-    title?: string;
-  };
-
-  ctaText?: string;
-  ctaLink?: string;
-};
-
-type FeaturedCategoriesData = {
-  __typename: "FeaturedCategoriesSection";
-  title?: string;
-
-  categoriesCollection?: {
+  marqueeItemsCollection?: {
     items: {
       title?: string;
-      subtitle?: string;
-      link?: string;
-    }[];
-  };
-};
-
-type DeckCarouselData = {
-  __typename: "DeckCarouselSection";
-  title?: string;
-  panelsCollection?: {
-    items: {
-      title?: string;
-      link?: string;
       image?: {
         url?: string;
       };
-      backgroundImage?: {
-        url?: string;
-      };
     }[];
   };
 };
 
-type StackedCarouselData = {
-  __typename: "StackedCarouselSection";
+type StoryData = {
+  __typename: "StorySection";
   title?: string;
-  panelsCollection?: {
+  tagline?: string;
+  imageStampText?: string;
+  blurb?: {
+    json?: Document;
+  };
+  image?: {
+    url?: string;
+  };
+  calloutsCollection?: {
     items: {
       title?: string;
-      link?: string;
-      image?: {
-        url?: string;
-      };
-      backgroundImage?: {
-        url?: string;
-      };
+      highlight?: string;
     }[];
   };
 };
 
-
-type TextSectionData = {
-  __typename: "TextSection";
-  content?: {
-    json: Document;
-  };
-};
-
-type CTASectionData = {
-  __typename: "CtaSection";
-  text?: string;
-  buttonText?: string;
-  buttonLink?: string;
-};
-
-type ShopifyCollectionSectionData = {
-  __typename: "ShopifyCollectionSection";
-  collectionId: string;
-};
-
-type TrustStripData = {
-  __typename: "TrustStripSection";
+type ExpandingPanelsData = {
+  __typename: "ExpandingPanelsSection";
   title?: string;
-
-  itemsCollection?: {
+  tagline?: string;
+  introBlurb?: string;
+  panelsCollection?: {
     items: {
-      text: string;
+      title: string;
+      blurb?: string;
+      buttonText?: string;
+      link?: string;
+
+      imageMain?: {
+        url: string;
+      };
+
     }[];
   };
 };
 
-type Section = HomepageHeroData | HeroSectionData | TextSectionData | CTASectionData | ShopifyCollectionSectionData | LifestyleBannerData | SectionIntroData | FeaturedCategoriesData | TrustStripData | StackedCarouselData | DeckCarouselData;
+type BlogData = {
+  __typename: "BlogSection";
+  title?: string;
+  tagline?: string;
+  blogPostsCollection?: {
+    items: {
+      title: string;
+      tag: string;
+      readLength: string;
+
+      image?: {
+        url: string;
+      };
+    }[];
+  };
+};
+
+
+type Section = HomepageHeroData | MarqueeData | StoryData | ExpandingPanelsData | BlogData;
 
 export default function SectionRenderer({
   sections,
@@ -151,93 +107,30 @@ export default function SectionRenderer({
 }) {
   if (!sections?.length) return null;
 
-  const first = sections[0];
-
   return (
     <>
-      {/* Sticky hero only if first section is HomepageHero */}
-      {first.__typename === "HomepageHero" && (
-        <div className="relative">
-          <div className="sticky top-0 h-screen z-0">
-            <HomeHeroSection data={first} />
-          </div>
 
-          {/* remaining sections */}
-          <div className="relative z-10 pt-1 bg-white">
-            {sections.slice(1).map((section, i) => {
-              switch (section.__typename) {
-                case "HeroSection":
-                  return <HeroSection key={i} data={section} />;
-
-                case "SectionIntro":
-                  return <SectionIntroSection key={i} data={section} />;
-
-                case "LifestyleBanner":
-                  return <LifestyleBannerSection key={i} data={section} />;
-
-                case "FeaturedCategoriesSection":
-                  return <FeaturedCategoriesSection key={i} data={section} />;
-
-                case "StackedCarouselSection":
-                  return <StackedCarouselSection key={i} data={section} />;
-
-                case "DeckCarouselSection":
-                  return <DeckCarouselSection key={i} data={section} />;
-
-                case "TextSection":
-                  return <TextSection key={i} data={section} />;
-
-                case "CtaSection":
-                  return <CTASection key={i} data={section} />;
-
-                case "ShopifyCollectionSection":
-                  return <ShopifyCollectionSection key={i} data={section} />;
-
-                case "TrustStripSection":
-                  return <TrustStrip key={i} data={section} />;
-
-                case "HomepageHero":
-                  // prevent duplicate rendering if another hero exists
-                  return null;
-
-                default:
-                  return null;
-              }
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Fallback: no hero-first layout */}
-      {first.__typename !== "HomepageHero" &&
-        sections.map((section, i) => {
+      {sections.map((section, i) => {
           switch (section.__typename) {
             case "HomepageHero":
               return <HomeHeroSection key={i} data={section} />;
 
-            case "HeroSection":
-              return <HeroSection key={i} data={section} />;
+            case "Marquee":
+              return <Marquee key={i} data={section} />;
 
-            case "SectionIntro":
-              return <SectionIntroSection key={i} data={section} />;
+            case "StorySection":
+              return <Story key={i} data={section} />;
 
-            case "LifestyleBanner":
-              return <LifestyleBannerSection key={i} data={section} />;
+            case "ExpandingPanelsSection":
+              return (
+                <ExpandingPanels
+                  key={i}
+                  data={section}
+                />
+              );
 
-            case "FeaturedCategoriesSection":
-              return <FeaturedCategoriesSection key={i} data={section} />;
-
-            case "TextSection":
-              return <TextSection key={i} data={section} />;
-
-            case "CtaSection":
-              return <CTASection key={i} data={section} />;
-
-            case "ShopifyCollectionSection":
-              return <ShopifyCollectionSection key={i} data={section} />;
-
-            case "TrustStripSection":
-              return <TrustStrip key={i} data={section} />;
+              case "BlogSection":
+                return <Blog key={i} data={section} />;
 
             default:
               return null;
