@@ -1,57 +1,35 @@
-import Image from "next/image";
+import { getPosts } from "@/lib/wordpress";
+import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getLatestPosts, type BlogPost } from "@/lib/wordpress";
+import Image from "next/image";
+import { Pagination } from "@/components/pagination";
 
-export async function Blog({
-  data,
-}: {
-  data?: {
-    title?: string;
-    tagline?: string;
-  };
-}) {
-  const posts: BlogPost[] = await getLatestPosts(4);
+type Props = {
+  params: Promise<{
+    page: string;
+  }>;
+};
+
+export default async function BlogPaginatedPage({
+  params,
+}: Props) {
+  const { page } = await params;
+
+  const pageNumber = Number(page);
+
+  const { posts, totalPages } =
+    await getPosts(pageNumber);
+
+  if (
+    pageNumber < 1 ||
+    pageNumber > totalPages
+  ) {
+    notFound();
+  }
 
   return (
-    <section
-      id="blog"
-      className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:py-28"
-    >
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-xl">
-          <span className="text-sm font-semibold uppercase tracking-widest text-primary">
-            {data?.tagline || "The journal"}
-          </span>
-
-          <h2 className="mt-3 text-balance font-heading text-4xl font-semibold leading-tight text-foreground md:text-5xl">
-            {data?.title || "Ideas, stories & gentle guidance"}
-          </h2>
-        </div>
-
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-        >
-          Read the journal
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
-        </Link>
-      </div>
-
-      <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <>
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         {posts.map((post) => (
           <Link
             key={post.id}
@@ -104,6 +82,11 @@ export async function Blog({
           </Link>
         ))}
       </div>
-    </section>
+
+      <Pagination
+        currentPage={pageNumber}
+        totalPages={totalPages}
+      />
+    </>
   );
 }
