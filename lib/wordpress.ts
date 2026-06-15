@@ -118,9 +118,12 @@ async function getFeedPosts(page = 1): Promise<BlogPost[]> {
         item.description?.match(/<img[^>]+src="([^">]+)"/)?.[1] ||
         undefined;
 
-      // 🧠 OG fallback (critical)
       if (!image && link) {
-        image = await fetchOgImage(link);
+        try {
+          image = await fetchOgImage(link);
+        } catch (e) {
+          console.error("OG image failed", link, e);
+        }
       }
 
       return {
