@@ -100,7 +100,11 @@ async function getFeedPosts(page = 1): Promise<BlogPost[]> {
   }
 
   const xml = await res.text();
-  const data = xmlParser.parse(xml);
+const data = xmlParser.parse(xml);
+
+console.log("RSS DATA", JSON.stringify(data).slice(0, 1000));
+console.log("ITEMS TYPE", typeof data?.rss?.channel?.item);
+console.log("ITEMS", data?.rss?.channel?.item?.length);
 
   const items: RSSItem[] =
     data?.rss?.channel?.item || [];
@@ -168,22 +172,13 @@ export async function getPost(slug: string, page = 1) {
     throw new Error(`Post not found: ${slug}`);
   }
 
-  const res = await fetch(
-  `https://www.elc.co.uk/raising-little-explorers/feed?paged=${page}`,
-  {
+  const res = await fetch(post.link, {
     headers: {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
     },
     cache: "no-store",
-  }
-);
-
-console.log(
-  "RSS STATUS",
-  res.status,
-  res.headers.get("content-type")
-);
+  });
 
   if (!res.ok) {
     throw new Error(`Post blocked: ${res.status}`);
