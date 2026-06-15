@@ -24,6 +24,41 @@ type RSSItem = {
   "content:encoded"?: string;
 };
 
+const FALLBACK_POSTS: BlogPost[] = [
+  {
+    id: "1",
+    title: "Fun Bathtime Games for Toddlers and Children",
+    slug: "bathtime-games",
+    link: "/blog/bathtime-games",
+    tag: "Buying Advice",
+    image: "/images/heritage.png",
+  },
+  {
+    id: "2",
+    title: "DIY Bath Toys: Sustainable Fun for Bath Time",
+    slug: "diy-bath-toys",
+    link: "/blog/diy-bath-toys",
+    tag: "Buying Advice",
+    image: "/images/heritage.png",
+  },
+  {
+    id: "3",
+    title: "How to Look After Bath Toys and Keep Them Clean",
+    slug: "cleaning-bath-toys",
+    tag: "Buying Advice",
+    link: "/blog/cleaning-bath-toys",
+    image: "/images/heritage.png",
+  },
+  {
+    id: "4",
+    title: "Bath Toys for Every Age",
+    slug: "bath-toys-for-every-age",
+    tag: "Buying Advice",
+    link: "/blog/bath-toys-for-every-age",
+    image: "/images/heritage.png",
+  },
+];
+
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
 });
@@ -95,29 +130,15 @@ async function getFeedPosts(page = 1): Promise<BlogPost[]> {
   );
 
   if (!res.ok) {
-  console.error(
-    "RSS blocked:",
-    res.status,
-    res.headers.get("content-type")
-  );
-
-  const body = await res.text();
-  console.error(body.substring(0, 500));
-
-  return [];
-}
+    console.error(`RSS blocked: ${res.status}`);
+    return [];
+  }
 
   const xml = await res.text();
   const data = xmlParser.parse(xml);
 
   const items: RSSItem[] =
     data?.rss?.channel?.item || [];
-
-    console.log("RSS STATUS:", res.status);
-console.log("RSS URL:", res.url);
-
-console.log("XML LENGTH:", xml.length);
-console.log("XML START:", xml.substring(0, 200));
 
   const posts = await Promise.all(
     items.map(async (item) => {
@@ -169,8 +190,18 @@ export async function getPosts(page = 1, perPage = 12) {
 }
 
 export async function getLatestPosts(limit = 4) {
-  const posts = await getFeedPosts(1);
-  return posts.slice(0, limit);
+  try {
+    const posts = await getFeedPosts(1);
+
+    if (!posts.length) {
+      return FALLBACK_POSTS.slice(0, limit);
+    }
+
+    return posts.slice(0, limit);
+  } catch (error) {
+    console.error("Blog fetch failed, using fallback:", error);
+    return FALLBACK_POSTS.slice(0, limit);
+  }
 }
 
 export async function getPost(slug: string, page = 1) {
