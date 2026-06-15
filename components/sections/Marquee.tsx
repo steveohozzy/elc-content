@@ -62,7 +62,7 @@ export function Marquee({ data }: Props) {
 >
         {looped.map((panel, i) => (
           <span key={i} className="flex items-center shrink-0 pr-8">
-            <span className="font-heading text-xl font-medium md:text-2xl">
+            <span className="font-heading text-lg font-medium md:text-xl">
               {panel.title}
             </span>
             <span className="text-accent pl-8" aria-hidden>
