@@ -10,15 +10,7 @@ export async function Blog({
     tagline?: string;
   };
 }) {
-  const posts: BlogPost[] = [
-  {
-    id: "1",
-    title: "Test Post",
-    slug: "test-post",
-    link: "/",
-    tag: "Test",
-  },
-];
+  const posts: BlogPost[] = await getLatestPosts(4);
 
   return (
     <section

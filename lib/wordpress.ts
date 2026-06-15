@@ -159,8 +159,13 @@ export async function getPosts(page = 1, perPage = 12) {
 }
 
 export async function getLatestPosts(limit = 4) {
-  const posts = await getFeedPosts(1);
-  return posts.slice(0, limit);
+  try {
+    const posts = await getFeedPosts(1);
+    return posts.slice(0, limit);
+  } catch (error) {
+    console.error("getLatestPosts failed", error);
+    return [];
+  }
 }
 
 export async function getPost(slug: string, page = 1) {
