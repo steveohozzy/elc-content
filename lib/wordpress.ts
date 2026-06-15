@@ -168,13 +168,22 @@ export async function getPost(slug: string, page = 1) {
     throw new Error(`Post not found: ${slug}`);
   }
 
-  const res = await fetch(post.link, {
+  const res = await fetch(
+  `https://www.elc.co.uk/raising-little-explorers/feed?paged=${page}`,
+  {
     headers: {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
     },
     cache: "no-store",
-  });
+  }
+);
+
+console.log(
+  "RSS STATUS",
+  res.status,
+  res.headers.get("content-type")
+);
 
   if (!res.ok) {
     throw new Error(`Post blocked: ${res.status}`);
