@@ -2,6 +2,7 @@ import { Blog } from "./Blog";
 import { ExpandingPanels } from "./ExpandingPanels";
 import HomeHeroSection from "./HomeHero";
 import { Marquee } from "./Marquee";
+import { Newsletter } from "./Newsletter";
 import { Story } from "./Story";
 import type { Document } from "@contentful/rich-text-types";
 
@@ -97,8 +98,14 @@ type BlogData = {
   };
 };
 
+type NewsletterSignUpData = {
+  __typename: "NewsletterSignUp";
+  title?: string;
+  intro?: string;
+};
 
-type Section = HomepageHeroData | MarqueeData | StoryData | ExpandingPanelsData | BlogData;
+
+type Section = HomepageHeroData | MarqueeData | StoryData | ExpandingPanelsData | BlogData | NewsletterSignUpData;
 
 export default function SectionRenderer({
   sections,
@@ -131,6 +138,9 @@ export default function SectionRenderer({
 
               case "BlogSection":
                 return <Blog key={i} data={section} />;
+
+              case "NewsletterSignUp":
+                return <Newsletter key={i} data={section} />;
 
             default:
               return null;

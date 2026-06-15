@@ -2,13 +2,22 @@ import { getPosts } from "@/lib/wordpress";
 import Link from "next/link";
 import Image from "next/image";
 import { Pagination } from "@/components/pagination";
+import SectionRenderer from "@/components/sections/SectionRenderer";
+import { getBlogPage } from "@/lib/getBlog";
 
 export default async function BlogPage() {
-  const { posts, totalPages } = await getPosts(1, 12);
+  const { posts, hasNextPage } = await getPosts(1, 12);
+
+   const page = await getBlogPage();
+
+  if (!page) {
+    return <div>Homepage not found</div>;
+  }
 
   return (
     <>
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <SectionRenderer sections={page.sectionsCollection?.items ?? []} />
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 max-w-7xl px-8">
         {posts.map((post) => (
           <Link
             key={post.id}
@@ -31,31 +40,12 @@ export default async function BlogPage() {
               </div>
 
               <div className="flex items-start justify-between gap-3 p-6">
-                <div>
-                  <div
-                    className="font-heading text-xl font-semibold text-foreground"
-                    dangerouslySetInnerHTML={{
-                      __html: post.title,
-                    }}
-                  />
-                </div>
-                <span className="mt-1 flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </span>
+                <div
+                  className="font-heading text-xl font-semibold text-foreground"
+                  dangerouslySetInnerHTML={{
+                    __html: post.title,
+                  }}
+                />
               </div>
             </article>
           </Link>
@@ -64,7 +54,7 @@ export default async function BlogPage() {
 
       <Pagination
         currentPage={1}
-        totalPages={totalPages}
+        hasNextPage={hasNextPage}
       />
     </>
   );

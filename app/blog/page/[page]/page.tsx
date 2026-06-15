@@ -10,29 +10,28 @@ type Props = {
   }>;
 };
 
-export default async function BlogPaginatedPage({
-  params,
-}: Props) {
+export default async function BlogPaginatedPage({ params }: Props) {
   const { page } = await params;
 
   const pageNumber = Number(page);
 
-  const { posts, totalPages } =
-    await getPosts(pageNumber);
+  if (!pageNumber || pageNumber < 1) {
+    notFound();
+  }
 
-  if (
-    pageNumber < 1 ||
-    pageNumber > totalPages
-  ) {
+  const { posts, hasNextPage } = await getPosts(pageNumber);
+
+  // If page 1 has no posts → invalid route
+  if (pageNumber === 1 && posts.length === 0) {
     notFound();
   }
 
   return (
     <>
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {posts.map((post) => (
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 max-w-7xl px-8">
+        {posts.map((post, i) => (
           <Link
-            key={post.id}
+            key={i}
             href={`/blog/${post.slug}`}
             className="group"
           >
@@ -52,31 +51,12 @@ export default async function BlogPaginatedPage({
               </div>
 
               <div className="flex items-start justify-between gap-3 p-6">
-                <div>
-                  <div
-                    className="font-heading text-xl font-semibold text-foreground"
-                    dangerouslySetInnerHTML={{
-                      __html: post.title,
-                    }}
-                  />
-                </div>
-                <span className="mt-1 flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </span>
+                <div
+                  className="font-heading text-xl font-semibold text-foreground"
+                  dangerouslySetInnerHTML={{
+                    __html: post.title,
+                  }}
+                />
               </div>
             </article>
           </Link>
@@ -85,7 +65,7 @@ export default async function BlogPaginatedPage({
 
       <Pagination
         currentPage={pageNumber}
-        totalPages={totalPages}
+        hasNextPage={hasNextPage}
       />
     </>
   );

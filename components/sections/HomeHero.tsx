@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
+type StoryStat = {
+  value?: string;
+  label?: string;
+};
+
 type HomeHeroSectionData = {
   tagline?: string;
   title?: string;
@@ -10,6 +15,13 @@ type HomeHeroSectionData = {
   backgroundImage?: {
     url: string;
     title?: string;
+  };
+
+  imageStampTitle?: string;
+  imageStampText?: string;
+
+  statsCollection?: {
+    items?: StoryStat[];
   };
 
   ctaPrimaryText?: string;
@@ -49,33 +61,38 @@ export default function HomeHeroSection({
               "subtitle."}
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href={data?.ctaPrimaryLink || "/"}
-              className="rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
-            >
-              {data?.ctaPrimaryText || "Discover"}
-            </Link>
-            <Link
-              href={data?.ctaSecondaryLink || "/"}
-              className="rounded-full border border-foreground/20 px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
-            >
-              {data?.ctaSecondaryText || "Explore"}
-            </Link>
-          </div>
-
-          <dl className="mt-10 flex flex-wrap gap-8">
-            {[
-              { n: "50+", l: "Years of play" },
-              { n: "1974", l: "Founded in the UK" },
-              { n: "1000s", l: "Of happy memories" },
-            ].map((s) => (
-              <div key={s.l}>
-                <dt className="font-heading text-3xl font-semibold text-foreground">{s.n}</dt>
-                <dd className="text-sm text-muted-foreground">{s.l}</dd>
-              </div>
-            ))}
-          </dl>
+          {data?.ctaPrimaryLink && (
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                href={data?.ctaPrimaryLink || "/"}
+                className="rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+              >
+                {data?.ctaPrimaryText || "Discover"}
+              </Link>
+              {data?.ctaSecondaryLink && (
+              <Link
+                href={data?.ctaSecondaryLink || "/"}
+                className="rounded-full border border-foreground/20 px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
+              >
+                {data?.ctaSecondaryText || "Explore"}
+              </Link>
+              )}
+            </div>
+          )}
+          {data?.statsCollection?.items?.length ? (
+            <dl className="mt-10 flex flex-wrap gap-8">
+              {data.statsCollection.items.map((stat, i) => (
+                <div key={i}>
+                  <dt className="font-heading text-3xl font-semibold text-foreground">
+                    {stat.value}
+                  </dt>
+                  <dd className="text-sm text-muted-foreground">
+                    {stat.label}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
         </div>
 
         <div className="relative z-10">
@@ -93,10 +110,16 @@ export default function HomeHeroSection({
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl bg-secondary px-5 py-4 shadow-lg sm:block">
-            <p className="font-heading text-xl font-semibold text-secondary-foreground">Play is learning</p>
-            <p className="text-sm text-secondary-foreground/80">and learning is joy</p>
-          </div>
+          {data?.imageStampTitle && (
+            <div className="absolute -bottom-5 -left-5 hidden rounded-2xl bg-secondary px-5 py-4 shadow-lg sm:block">
+              <p className="font-heading text-xl font-semibold text-secondary-foreground">
+                {data?.imageStampTitle}
+              </p>
+              <p className="text-sm text-secondary-foreground/80">
+                {data?.imageStampText}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>

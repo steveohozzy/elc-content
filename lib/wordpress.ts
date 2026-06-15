@@ -1,10 +1,6 @@
 import * as cheerio from "cheerio";
 import { XMLParser } from "fast-xml-parser";
 
-const xmlParser = new XMLParser({
-  ignoreAttributes: false,
-});
-
 export type BlogPost = {
   id: string;
   title: string;
@@ -28,7 +24,11 @@ type RSSItem = {
   "content:encoded"?: string;
 };
 
-async function fetchOgImage(url: string) {
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+});
+
+async function fetchOgImage(url: string): Promise<string | undefined> {
   try {
     const res = await fetch(url, {
       headers: {
@@ -38,7 +38,7 @@ async function fetchOgImage(url: string) {
       cache: "no-store",
     });
 
-    if (!res.ok) return null;
+    if (!res.ok) return undefined;
 
     const html = await res.text();
 
@@ -46,15 +46,45 @@ async function fetchOgImage(url: string) {
       /<meta property="og:image" content="([^"]+)"/
     );
 
-    return match?.[1] || null;
+    return match?.[1];
   } catch {
-    return null;
+    return undefined;
   }
 }
 
-async function getFeedPosts(): Promise<BlogPost[]> {
+/**
+ * TRUE pagination check:
+ * Instead of guessing, we check if next page actually returns items.
+ */
+async function hasNextPage(page: number): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `https://www.elc.co.uk/raising-little-explorers/feed?paged=${page + 1}`,
+      {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) return false;
+
+    const xml = await res.text();
+
+    const data = xmlParser.parse(xml);
+    const items = data?.rss?.channel?.item;
+
+    return Array.isArray(items) && items.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+async function getFeedPosts(page = 1): Promise<BlogPost[]> {
   const res = await fetch(
-    "https://www.elc.co.uk/raising-little-explorers/feed",
+    `https://www.elc.co.uk/raising-little-explorers/feed?paged=${page}`,
     {
       headers: {
         "User-Agent":
@@ -69,24 +99,25 @@ async function getFeedPosts(): Promise<BlogPost[]> {
   }
 
   const xml = await res.text();
-  const data = new XMLParser({ ignoreAttributes: false }).parse(xml);
+  const data = xmlParser.parse(xml);
 
-  const items = data?.rss?.channel?.item || [];
+  const items: RSSItem[] =
+    data?.rss?.channel?.item || [];
 
   const posts = await Promise.all(
-    items.map(async (item: RSSItem) => {
+    items.map(async (item) => {
       const link = item.link;
 
       const slug =
         link?.split("/").filter(Boolean).pop() ?? "";
 
-      // 🖼 Try RSS first
+      // 🖼 RSS image first
       let image =
         item.enclosure?.["@_url"] ||
         item.description?.match(/<img[^>]+src="([^">]+)"/)?.[1] ||
-        null;
+        undefined;
 
-      // 🧠 fallback: OG image from post page (THIS fixes your issue)
+      // 🧠 OG fallback (critical)
       if (!image && link) {
         image = await fetchOgImage(link);
       }
@@ -95,7 +126,7 @@ async function getFeedPosts(): Promise<BlogPost[]> {
         id: item.guid ?? slug,
         title: item.title ?? "",
         slug,
-        link,
+        link: link ?? "",
         tag: item.category ?? "Blog",
         date: item.pubDate,
         image,
@@ -106,26 +137,26 @@ async function getFeedPosts(): Promise<BlogPost[]> {
   return posts;
 }
 
-export async function getLatestPosts(limit = 4): Promise<BlogPost[]> {
-  const posts = await getFeedPosts();
-  return posts.slice(0, limit);
-}
-
 export async function getPosts(page = 1, perPage = 12) {
-  const allPosts = await getFeedPosts();
+  const posts = await getFeedPosts(page);
 
-  const start = (page - 1) * perPage;
-  const end = start + perPage;
+  const hasNext = await hasNextPage(page);
 
   return {
-    posts: allPosts.slice(start, end),
-    totalPosts: allPosts.length,
-    totalPages: Math.ceil(allPosts.length / perPage),
+    posts,
+    page,
+    perPage,
+    hasNextPage: hasNext,
   };
 }
 
-export async function getPost(slug: string) {
-  const posts = await getFeedPosts();
+export async function getLatestPosts(limit = 4) {
+  const posts = await getFeedPosts(1);
+  return posts.slice(0, limit);
+}
+
+export async function getPost(slug: string, page = 1) {
+  const posts = await getFeedPosts(page);
 
   const post = posts.find((p) => p.slug === slug);
 
@@ -149,16 +180,13 @@ export async function getPost(slug: string) {
   const $ = cheerio.load(html);
 
   const contentHtml =
-    $("#wrapper").html() ||
-    $(".post-content").html() ||
-    $("article").html() ||
-    $("main").html() ||
+    $(".row-news-single .col.col-xs-12.col-sm-10.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3").html() ||
     "";
 
   const image =
     $('meta[property="og:image"]').attr("content") ||
     post.image ||
-    "";
+    undefined;
 
   return {
     ...post,

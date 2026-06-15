@@ -56,7 +56,7 @@
   --popover: oklch(0.99 0.008 85);
   --popover-foreground: oklch(0.23 0.03 50);
   /* Warm red brand primary */
-  --primary: oklch(45.637% 0.14314 141.027);
+  --primary: oklch(32.187% 0.10266 140.731);
   --primary-foreground: oklch(0.98 0.01 85);
   /* Sky blue secondary */
   --secondary: oklch(0.7 0.12 235);
@@ -134,14 +134,30 @@
 
 @keyframes marquee {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(calc(-1 * var(--marquee-distance)));
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
-.animate-marquee {
-  animation: marquee 28s linear infinite;
-  will-change: transform;
+a[href*="facebook.com"]::before {
+  content: "📘";
+}
+
+a[href*="twitter.com"]::before {
+  content: "𝕏";
+}
+
+a[href*="pinterest.com"]::before {
+  content: "📌";
+}
+
+.share-icon {
+  @apply inline-flex h-10 w-10 items-center justify-center rounded-full bg-muted transition-colors;
+  text-decoration: none !important;
+}
+
+.share-icon:hover {
+  @apply bg-primary text-primary-foreground;
 }

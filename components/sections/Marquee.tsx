@@ -18,6 +18,7 @@ type Props = {
     };
   };
 };
+
 export function Marquee({ data }: Props) {
   const panels: ValidPanel[] =
     (data.marqueeItemsCollection?.items ?? []).filter(
@@ -31,28 +32,40 @@ export function Marquee({ data }: Props) {
     const looped = [...panels, ...panels];
 
     useEffect(() => {
-      if (!trackRef.current) return;
+  const measure = () => {
+    if (!trackRef.current) return;
+    setDistance(trackRef.current.scrollWidth / 2);
+  };
 
-      // measure half the scroll width (because we duplicated content)
-      const fullWidth = trackRef.current.scrollWidth;
-      setDistance(fullWidth / 2);
-    }, [panels.length]);
+  measure();
+
+  document.fonts?.ready.then(measure);
+
+  window.addEventListener("resize", measure);
+  return () => window.removeEventListener("resize", measure);
+  
+}, []);
   return (
+    
      <div className="border-y border-border bg-foreground py-4 text-background overflow-hidden">
       <div
-        className="flex w-max items-center gap-8"
-        style={{
-          "--marquee-distance": `${distance}px`,
-          animation: distance > 0 ? "marquee 28s linear infinite" : "none",
-        } as React.CSSProperties}
-        ref={trackRef}
-      >
+  key={distance}
+  ref={trackRef}
+  className="flex w-max items-center will-change-transform"
+  style={{
+    "--marquee-distance": `${distance}px`,
+    animation:
+      distance > 0
+        ? "marquee 40s linear infinite"
+        : "none",
+  } as React.CSSProperties}
+>
         {looped.map((panel, i) => (
-          <span key={i} className="flex items-center gap-8 shrink-0">
+          <span key={i} className="flex items-center shrink-0 pr-8">
             <span className="font-heading text-xl font-medium md:text-2xl">
               {panel.title}
             </span>
-            <span className="text-accent" aria-hidden>
+            <span className="text-accent pl-8" aria-hidden>
               ✦
             </span>
           </span>

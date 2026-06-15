@@ -52,9 +52,9 @@ export async function Blog({
       </div>
 
       <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {posts.map((post) => (
+        {posts.map((post, i) => (
           <Link
-            key={post.id}
+            key={i}
             href={`/blog/${post.slug}`}
             className="group"
           >
