@@ -100,14 +100,16 @@ async function getFeedPosts(page = 1): Promise<BlogPost[]> {
   }
 
   const xml = await res.text();
-const data = xmlParser.parse(xml);
-
-console.log("RSS DATA", JSON.stringify(data).slice(0, 1000));
-console.log("ITEMS TYPE", typeof data?.rss?.channel?.item);
-console.log("ITEMS", data?.rss?.channel?.item?.length);
+  const data = xmlParser.parse(xml);
 
   const items: RSSItem[] =
     data?.rss?.channel?.item || [];
+
+    console.log("RSS STATUS:", res.status);
+console.log("RSS URL:", res.url);
+
+console.log("XML LENGTH:", xml.length);
+console.log("XML START:", xml.substring(0, 200));
 
   const posts = await Promise.all(
     items.map(async (item) => {
@@ -159,13 +161,8 @@ export async function getPosts(page = 1, perPage = 12) {
 }
 
 export async function getLatestPosts(limit = 4) {
-  try {
-    const posts = await getFeedPosts(1);
-    return posts.slice(0, limit);
-  } catch (error) {
-    console.error("getLatestPosts failed", error);
-    return [];
-  }
+  const posts = await getFeedPosts(1);
+  return posts.slice(0, limit);
 }
 
 export async function getPost(slug: string, page = 1) {
