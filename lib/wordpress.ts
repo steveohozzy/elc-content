@@ -95,9 +95,17 @@ async function getFeedPosts(page = 1): Promise<BlogPost[]> {
   );
 
   if (!res.ok) {
-    console.error(`RSS blocked: ${res.status}`);
-    return [];
-  }
+  console.error(
+    "RSS blocked:",
+    res.status,
+    res.headers.get("content-type")
+  );
+
+  const body = await res.text();
+  console.error(body.substring(0, 500));
+
+  return [];
+}
 
   const xml = await res.text();
   const data = xmlParser.parse(xml);
