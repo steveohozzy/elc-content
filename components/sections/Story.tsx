@@ -43,9 +43,13 @@ export function Story({ data }: { data?: StoryData }) {
             <Image
               src={data?.image?.url || "/images/heritage.png"}
               alt={data?.title || "Story image"}
-              width={800}
-              height={700}
-              className="h-full w-full object-cover"
+              fill
+              sizes="(max-width: 640px) 100vw,
+                    (max-width: 1024px) 50vw,
+                    600px"
+              className="object-cover"
+              loading="lazy"
+              quality={80}
             />
           </div>
 
