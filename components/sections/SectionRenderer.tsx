@@ -85,15 +85,13 @@ type BlogData = {
   __typename: "BlogSection";
   title?: string;
   tagline?: string;
-  blogPostsCollection?: {
+  introBlurb?: string;
+  panelsCollection?: {
     items: {
       title: string;
-      tag: string;
-      readLength: string;
-
-      image?: {
-        url: string;
-      };
+      blurb?: string;
+      buttonText?: string;
+      link?: string;
     }[];
   };
 };
