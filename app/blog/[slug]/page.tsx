@@ -78,7 +78,7 @@ export default async function BlogPost({
       />
       <div
         className="
-    mx-auto max-w-5xl items-center gap-10 px-4 pb-16 pt-10 md:px-8  lg:gap-12 lg:pb-24 lg:pt-16
+    mx-auto max-w-4xl items-center gap-10 px-4 pb-16 pt-10 md:px-8 lg:gap-12 lg:pb-24 lg:pt-16
     [&_h2]:text-primary
     [&_h2]:text-3xl
     [&_h2]:font-heading
@@ -106,8 +106,7 @@ export default async function BlogPost({
     [&_li>p]:m-0
     [&_li>p]:inline
 
-    [&_p]:text-primary
-    [&_p]:text-sm
+    [&_p]:text-foreground
     [&_p]:leading-8
 
     [&_a]:text-primary
