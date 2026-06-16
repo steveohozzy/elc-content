@@ -57,7 +57,7 @@ export function ExpandingPanels({ data }: Props) {
                   className={`group flex flex-col items-start rounded-3xl border p-6 text-left transition-all duration-300 ${
                     isActive
                       ? "scale-[1.02] border-transparent bg-card shadow-xl"
-                      : "border-border bg-card/40 hover:bg-card"
+                      : "border-border bg-card/60 hover:bg-card"
                   }`}
                 >
                   <span
@@ -87,9 +87,7 @@ export function ExpandingPanels({ data }: Props) {
                   </div>
 
                   <p
-                    className={`mt-2 text-sm leading-relaxed text-gray-700 transition-all duration-300 ${
-                      isActive ? "opacity-100" : "opacity:100 lg:opacity-80"
-                    }`}
+                    className={`mt-2 text-sm leading-relaxed text-foreground/80 transition-all duration-300 `}
                   >
                     {p.blurb}
                   </p>
