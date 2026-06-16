@@ -107,7 +107,7 @@ export default function HomeHeroSection({
               fill
               priority
               quality={85}
-              sizes="(max-width: 640px) 70vw,
+              sizes="(max-width: 640px) 50vw,
        (max-width: 1024px) 420px,
        420px"
               className="object-cover"
