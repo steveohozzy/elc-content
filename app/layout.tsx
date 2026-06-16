@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { getMenuPages } from "@/lib/contentful";
 
 import { Geist, Fraunces } from "next/font/google";
+import { cache } from "react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,12 +17,15 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+// Cache menu requests across renders
+const getCachedMenuPages = cache(getMenuPages);
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const menuItems = await getMenuPages();
+  const menuItems = await getCachedMenuPages();
 
   return (
     <html
