@@ -107,6 +107,7 @@ export default function HomeHeroSection({
               fill
               priority
               quality={85}
+              width={420}
               sizes="(max-width: 640px) 420px,
        (max-width: 1024px) 420px,
        420px"
