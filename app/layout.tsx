@@ -31,7 +31,6 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://elc-content.vercel.app" />
         <link rel="dns-prefetch" href="https://elc-content.vercel.app" />
-        <link rel="preconnect" href="https://images.ctfassets.net" />
       </head>
 
       <body>
