@@ -140,24 +140,3 @@
     transform: translate3d(-50%, 0, 0);
   }
 }
-
-a[href*="facebook.com"]::before {
-  content: "📘";
-}
-
-a[href*="twitter.com"]::before {
-  content: "𝕏";
-}
-
-a[href*="pinterest.com"]::before {
-  content: "📌";
-}
-
-.share-icon {
-  @apply inline-flex h-10 w-10 items-center justify-center rounded-full bg-muted transition-colors;
-  text-decoration: none !important;
-}
-
-.share-icon:hover {
-  @apply bg-primary text-primary-foreground;
-}
