@@ -43,9 +43,9 @@ export default async function BlogPage() {
       <SectionRenderer sections={filteredSections} />
 
       <div className="mx-auto grid max-w-7xl gap-6 px-8 md:grid-cols-2 xl:grid-cols-4">
-        {posts.map((post: Post) => (
+        {posts.map((post: Post, i: number) => (
           <Link
-            key={post.slug}
+            key={i}
             href={`/blog/${post.slug}`}
             className="group"
           >

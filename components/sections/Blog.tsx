@@ -42,9 +42,9 @@ export function Blog({ data }: Props) {
       </div>
 
       <div className="mt-12 grid gap-6 md:grid-cols-3">
-        {panels.map((p) => (
+        {panels.map((p, i) => (
           <article
-            key={p.title}
+            key={i}
             className="group overflow-hidden rounded-[2rem] border border-border bg-card transition-shadow hover:shadow-xl"
           >
             <Link href={`/blog/${p.slug}`}>
