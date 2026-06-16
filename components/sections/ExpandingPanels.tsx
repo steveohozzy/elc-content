@@ -87,7 +87,7 @@ export function ExpandingPanels({ data }: Props) {
                   </div>
 
                   <p
-                    className={`mt-2 text-sm leading-relaxed text-muted-foreground transition-all duration-300 ${
+                    className={`mt-2 text-sm leading-relaxed text-gray-700 transition-all duration-300 ${
                       isActive ? "opacity-100" : "opacity-70"
                     }`}
                   >
