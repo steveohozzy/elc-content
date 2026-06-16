@@ -28,6 +28,15 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${fraunces.variable}`}
     >
+      <head>
+        {/* 🚀 Performance hint for external assets */}
+        <link rel="preconnect" href="https://elc-content.vercel.app" />
+        <link rel="dns-prefetch" href="https://elc-content.vercel.app" />
+
+        {/* If using Contentful images (highly likely) */}
+        <link rel="preconnect" href="https://images.ctfassets.net" />
+      </head>
+
       <body>
         <Header menuItems={menuItems} />
 
