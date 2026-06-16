@@ -39,7 +39,7 @@ export function Story({ data }: { data?: StoryData }) {
 
         {/* IMAGE */}
         <div className={`relative ${data?.flip ? "order-1 lg:order-2" : "order-2 lg:order-1"}`}>
-          <div className="overflow-hidden rounded-[2rem] border border-border shadow-lg">
+          <div className="relative overflow-hidden rounded-[2rem] border border-border shadow-lg aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5]">
             <Image
               src={data?.image?.url || "/images/heritage.png"}
               alt={data?.title || "Story image"}

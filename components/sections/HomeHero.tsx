@@ -96,7 +96,7 @@ export default function HomeHeroSection({
         </div>
 
         <div className="relative z-10">
-          <div className="relative overflow-hidden rounded-[2rem] border border-border shadow-xl">
+          <div className="relative overflow-hidden rounded-[2rem] border border-border shadow-xl aspect-[9/10] lg:aspect-[4/5]">
             <Image
               src={
                 data?.backgroundImage?.url
