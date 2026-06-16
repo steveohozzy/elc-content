@@ -100,14 +100,17 @@ export default function HomeHeroSection({
             <Image
               src={
                 data?.backgroundImage?.url
-                  ? `${data?.backgroundImage.url}`
+                  ? data.backgroundImage.url
                   : "https://images.unsplash.com/photo-1590461283969-47fedf408cfd?fm=jpg&q=60&w=3000&auto=format&fit=crop"
               }
               alt={data?.backgroundImage?.title || "Hero image"}
-              width={900}
-              height={1000}
+              fill
               priority
-              className="h-full w-full object-cover"
+              quality={85}
+              sizes="(max-width: 640px) 100vw,
+                    (max-width: 1024px) 50vw,
+                    900px"
+              className="object-cover"
             />
           </div>
           {data?.imageStampTitle && (
