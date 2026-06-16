@@ -1,5 +1,59 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-geist-sans), 'Geist Fallback';
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+}
+
+:root {
+  --background: oklch(0.97 0.014 85);
+  --foreground: oklch(0.23 0.03 50);
+  --card: oklch(0.99 0.008 85);
+  --card-foreground: oklch(0.23 0.03 50);
+  --popover: oklch(0.99 0.008 85);
+  --popover-foreground: oklch(0.23 0.03 50);
+  /* Warm red brand primary */
+  --primary: oklch(32.187% 0.10266 140.731);
+  --primary-foreground: oklch(0.98 0.01 85);
+  /* Sky blue secondary */
+  --secondary: oklch(0.7 0.12 235);
+  --secondary-foreground: oklch(0.2 0.03 50);
+  --muted: oklch(0.93 0.018 85);
+  --muted-foreground: oklch(0.5 0.03 60);
+  /* Sunny yellow accent */
+  --accent: oklch(0.86 0.16 90);
+  --accent-foreground: oklch(0.25 0.04 50);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.88 0.02 80);
+  --input: oklch(0.88 0.02 80);
+  --ring: oklch(0.585 0.205 27);
+  --chart-1: oklch(0.585 0.205 27);
+  --chart-2: oklch(0.7 0.12 235);
+  --chart-3: oklch(0.86 0.16 90);
+  --chart-4: oklch(0.65 0.15 150);
+  --chart-5: oklch(0.6 0.18 35);
+}
+
 @keyframes marquee {
   from {
     transform: translate3d(0, 0, 0);
